@@ -25,8 +25,9 @@ export const Hero = () => {
             transition={{ duration: 0.8, ease: "easeOut" }}
             className="text-accent font-mono text-xs uppercase tracking-[0.4em] block"
           >
-            Creative Developer
+            Frontend Developer
           </motion.span>
+
           
           <motion.p
             className="max-w-lg mx-auto text-muted text-sm md:text-base leading-relaxed"

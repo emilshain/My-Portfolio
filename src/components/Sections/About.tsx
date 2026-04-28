@@ -27,8 +27,9 @@ export const About = () => {
           className="space-y-6 text-muted text-lg leading-relaxed"
         >
           <p>
-            I am a Creative Developer driven by the synergy of aesthetics and high-performance code. My core strength lies in bridging the gap between design and engineering, ensuring every interface I build is as functional as it is beautiful.
+            I am a Frontend Developer driven by the synergy of aesthetics and high-performance code. My core strength lies in bridging the gap between design and engineering, ensuring every interface I build is as functional as it is beautiful.
           </p>
+
           <p>
             Currently, I lead visual identity and creative direction at <span className="text-white">IEDC</span>, Christ College of Engineering. As a <span className="text-white">3× Hackathon Winner</span>, I have a proven track record of delivering end-to-end solutions — from initial Figma wireframes to full-scale React/Next.js production.
           </p>

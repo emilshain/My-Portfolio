@@ -13,9 +13,10 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Emil Shain | Creative Developer & 3D Web Artist",
-  description: "Portfolio of Emil Shain, specializing in building high-performance 3D web experiences and modern interfaces.",
+  title: "Emil Shain | Frontend Developer",
+  description: "Portfolio of Emil Shain, a Frontend Developer specializing in high-performance web interfaces and interactive experiences.",
 };
+
 
 export default function RootLayout({
   children,
