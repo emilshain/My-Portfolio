@@ -28,11 +28,11 @@ export default function Home() {
         <div className="flex justify-center gap-0 text-sm font-medium pointer-events-auto">
           {[
             { name: "About", href: "#about" },
-            { name: "Work", href: "#projects" },
             { name: "Skills", href: "#skills" },
             { name: "Achievements", href: "#achievements" },
             { name: "Contact", href: "#contact" }
           ].map((item) => (
+
             <a
               key={item.name}
               href={item.href}

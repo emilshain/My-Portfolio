@@ -18,14 +18,14 @@ export const LoadingScreen = () => {
     <AnimatePresence>
       {isLoading && (
         <motion.div
-          className="fixed inset-0 z-[2000] flex items-center justify-center bg-[var(--background)]"
+          className="fixed inset-0 z-[2000] flex items-center justify-center bg-accent"
           initial={{ y: "0%" }}
           animate={{ y: "0%" }}
           exit={{ y: "-100%" }}
           transition={{ duration: 1.25, ease: [0.76, 0, 0.24, 1] }}
         >
           <motion.p
-            className="text-xl font-bold tracking-tighter"
+            className="text-xl font-bold tracking-tighter text-white"
             initial={{ opacity: 0, y: 4 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.35, delay: 0.3, ease: "easeOut" }}
@@ -33,6 +33,7 @@ export const LoadingScreen = () => {
             Emil Shain
           </motion.p>
         </motion.div>
+
       )}
     </AnimatePresence>
   );
