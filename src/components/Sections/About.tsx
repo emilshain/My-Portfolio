@@ -30,7 +30,7 @@ export const About = () => {
             I am a Creative Developer driven by the synergy of aesthetics and high-performance code. My core strength lies in bridging the gap between design and engineering, ensuring every interface I build is as functional as it is beautiful.
           </p>
           <p>
-            Currently, I serve as the <span className="text-white">Chief Creative Officer</span> at IEDC, Christ College of Engineering. As a <span className="text-white">3× Hackathon Winner</span>, I have a proven track record of delivering end-to-end solutions — from initial Figma wireframes to full-scale React/Next.js production.
+            Currently, I lead visual identity and creative direction at <span className="text-white">IEDC</span>, Christ College of Engineering. As a <span className="text-white">3× Hackathon Winner</span>, I have a proven track record of delivering end-to-end solutions — from initial Figma wireframes to full-scale React/Next.js production.
           </p>
           <div className="pt-4 grid grid-cols-2 gap-4">
             <div>
@@ -39,9 +39,10 @@ export const About = () => {
             </div>
             <div>
               <p className="text-white font-bold text-2xl">IEDC</p>
-              <p className="text-xs uppercase tracking-widest">Chief Creative Officer</p>
+              <p className="text-xs uppercase tracking-widest">Design Lead</p>
             </div>
           </div>
+
         </motion.div>
 
 
