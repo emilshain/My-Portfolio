@@ -1,0 +1,56 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+  --color-accent: #f74507;
+}
+
+:root {
+  --background: #050505;
+  --foreground: #ededed;
+  --accent: #f74507;
+  --accent-foreground: #ffffff;
+}
+
+@layer base {
+  * {
+    @apply border-white/10;
+    cursor: none !important;
+  }
+  body {
+    @apply bg-[var(--background)] text-[var(--foreground)] selection:bg-accent/30 selection:text-white;
+    font-feature-settings: "cv11", "ss01";
+    overflow-x: hidden;
+  }
+}
+
+.glass-pill {
+  @apply relative inline-flex items-center justify-center rounded-full no-underline px-3 py-1.5 transition-colors duration-300;
+  background: transparent;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+
+.glass-pill span {
+  @apply relative inline-block;
+  mix-blend-mode: difference;
+}
+
+.glass-pill:hover {
+  @apply bg-transparent;
+  transform: none;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-black;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-white/20 rounded-full hover:bg-white/30 transition-colors;
+}
