@@ -10,6 +10,8 @@ import { Achievements } from "@/components/Sections/Achievements";
 import { Projects } from "@/components/Sections/Projects";
 import { Footer } from "@/components/Sections/Footer";
 import { useState, useEffect, useRef } from "react";
+import Image from "next/image";
+
 
 
 export default function Home() {
@@ -49,14 +51,23 @@ export default function Home() {
       <LoadingScreen />
       <CustomCursor />
 
-      {/* Persistent Name Branding */}
-      <h1
-        className={`fixed top-8 left-8 z-50 text-xl font-bold tracking-tighter transition-colors duration-500 pointer-events-none ${
+      <div
+        className={`fixed top-8 left-8 z-50 flex items-center gap-2.5 transition-colors duration-500 pointer-events-none ${
           isDarkText ? "text-black" : "text-white"
         }`}
       >
-        Emil Shain
-      </h1>
+        <div className="relative w-6 h-6">
+          <Image
+            src="/logo.png"
+            alt="Logo"
+            fill
+            className="object-contain"
+          />
+        </div>
+        <h1 className="text-xl font-bold tracking-tighter">
+          Emil Shain
+        </h1>
+      </div>
 
       {/* Navigation - Overlay */}
       <nav className="fixed top-0 left-0 w-full p-8 z-50 flex justify-center pointer-events-none">
