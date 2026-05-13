@@ -90,7 +90,8 @@ const DistortionPlane = ({ imagePath }: { imagePath: string }) => {
     const mat = meshRef.current.material as THREE.ShaderMaterial;
     mat.uniforms.time.value = state.clock.elapsedTime;
     
-    const imageAspect = texture.image ? texture.image.width / texture.image.height : 1.5;
+    const image = texture.image as { width?: number; height?: number } | undefined;
+    const imageAspect = image?.width && image?.height ? image.width / image.height : 1.5;
     let a1, a2;
     if (size.height / size.width > 1 / imageAspect) {
       a1 = (size.width / size.height) * imageAspect;
