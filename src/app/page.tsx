@@ -18,6 +18,7 @@ import { Typewriter } from "@/components/UI/Typewriter";
 export default function Home() {
   const [isDarkText, setIsDarkText] = useState(false);
   const [isFooterVisible, setIsFooterVisible] = useState(false);
+  const [currentTime, setCurrentTime] = useState("");
   const sectionsRef = useRef<HTMLDivElement>(null);
 
   const scrollToTop = () => {
@@ -62,9 +63,26 @@ export default function Home() {
     const footerNameElement = document.querySelector("#contact h2");
     if (footerNameElement) footerObserver.observe(footerNameElement);
 
+    // Live Indian Time Update
+    const updateTime = () => {
+      const now = new Date();
+      const timeStr = now.toLocaleTimeString("en-US", {
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+        hour12: true,
+        timeZone: "Asia/Kolkata",
+      });
+      setCurrentTime(timeStr);
+    };
+
+    updateTime();
+    const timeInterval = setInterval(updateTime, 1000);
+
     return () => {
       observer.disconnect();
       footerObserver.disconnect();
+      clearInterval(timeInterval);
     };
   }, []);
 
@@ -89,7 +107,7 @@ export default function Home() {
         <button
           type="button"
           onClick={scrollToTop}
-          className="pointer-events-auto text-xl font-bold tracking-tighter text-left cursor-pointer"
+          className="pointer-events-auto text-xl font-bold tracking-tighter text-left cursor-pointer uppercase"
           aria-label="Scroll to top"
         >
           <Typewriter 
@@ -99,6 +117,18 @@ export default function Home() {
             delay={0}
           />
         </button>
+      </div>
+
+      {/* Location & Time - Top Right */}
+      <div
+        className={`fixed top-8 right-8 z-50 transition-all duration-500 pointer-events-none ${
+          isDarkText ? "text-black" : "text-white"
+        } ${isFooterVisible ? "opacity-0 translate-y-[-10px]" : "opacity-100 translate-y-0"}`}
+      >
+        <div className="text-sm font-bold tracking-tighter flex gap-3 items-center uppercase">
+          <span>Thrissur, IN</span>
+          <span>{currentTime} IST</span>
+        </div>
       </div>
 
       {/* Navigation - Overlay */}
@@ -114,7 +144,7 @@ export default function Home() {
             <a
               key={item.name}
               href={item.href}
-              className={`uppercase tracking-widest text-[10px] transition-colors duration-500 ease-out hover:opacity-50 ${
+              className={`transition-colors duration-500 ease-out hover:opacity-50 font-bold tracking-tighter uppercase ${
                 isDarkText ? "text-black" : "text-white"
               }`}
             >
