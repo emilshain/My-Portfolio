@@ -28,10 +28,10 @@ export const Footer = () => {
     <footer
       id="contact"
       ref={footerRef}
-      className="relative flex min-h-screen w-full flex-col justify-between bg-[#050505] px-6 pt-24 pb-0 md:px-16"
+      className="relative flex h-screen w-full flex-col justify-between bg-[#050505] px-6 pt-0 pb-0 md:px-16"
     >
       {/* Top Section */}
-      <div className="flex w-full flex-col lg:flex-row justify-between items-start mt-12 relative z-10 flex-grow">
+      <div className="flex w-full flex-col lg:flex-row justify-between items-start mt-8 relative z-10 flex-grow">
         
         {/* Left: Contact */}
         <div className="flex flex-col mb-16 lg:mb-0 lg:w-1/3">
@@ -104,8 +104,8 @@ export const Footer = () => {
       </div>
 
       {/* Bottom Section */}
-      <div className="flex flex-col w-full mt-auto relative z-10 pt-16">
-        <div className="flex flex-col md:flex-row justify-between items-center w-full py-6 border-t border-white/10">
+      <div className="flex flex-col w-full mt-auto relative z-10">
+        <div className="flex flex-col md:flex-row justify-between items-center w-full py-4 border-t border-white/10">
           <p className="text-white/60 text-sm">
             © {new Date().getFullYear()} Emil Shain
           </p>
@@ -118,10 +118,10 @@ export const Footer = () => {
         </div>
         
         {/* Huge Name */}
-        <div className="w-full mt-8 -mx-6 md:-mx-16 px-0 overflow-clip" ref={nameRef}>
+        <div className="relative w-screen left-1/2 -translate-x-1/2 px-0 pt-0 pb-0 overflow-visible" ref={nameRef}>
           <h2 
             data-cursor="morph"
-            className="text-[14vw] md:text-[16vw] font-bold leading-[0.9] tracking-tighter text-white text-center select-none whitespace-nowrap uppercase w-full"
+            className="text-[18vw] font-bold leading-none tracking-tighter text-white text-center select-none whitespace-nowrap uppercase w-full"
           >
             <Typewriter 
               text="Emil Shain" 
@@ -133,5 +133,6 @@ export const Footer = () => {
         </div>
       </div>
     </footer>
+
   );
 };

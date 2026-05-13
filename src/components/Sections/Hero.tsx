@@ -28,15 +28,15 @@ export const Hero = () => {
         <DistortedHeroBackground imagePath="/hero-background.png" />
       </div>
 
-      <div className="relative z-10 w-full h-full flex flex-col justify-end items-center pb-6 md:pb-10">
-        <div className="text-center w-full mb-2 md:mb-4">
+      <div className="relative z-10 w-full h-full flex flex-col justify-end items-center pb-2">
+        <div className="text-center w-full mb-0">
           <motion.div
             className="w-full px-4 overflow-clip"
             initial={{ opacity: 0, y: 50 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
           >
-            <h1 className="text-[12vw] md:text-[15vw] font-bold tracking-tighter text-white leading-[0.8] text-center w-full uppercase select-none whitespace-nowrap drop-shadow-2xl">
+            <h1 className="text-[18vw] font-bold tracking-tighter text-white leading-none text-center w-full uppercase select-none whitespace-nowrap drop-shadow-2xl py-4">
               Emil Shain
             </h1>
           </motion.div>
