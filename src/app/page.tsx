@@ -74,8 +74,9 @@ export default function Home() {
         <div className="flex justify-center gap-8 text-sm font-medium pointer-events-auto">
           {[
             { name: "About", href: "#about" },
-            { name: "Skills", href: "#skills" },
             { name: "Achievements", href: "#achievements" },
+            { name: "Projects", href: "#projects" },
+            { name: "Skills", href: "#skills" },
             { name: "Contact", href: "#contact" }
           ].map((item) => (
             <a
@@ -103,9 +104,9 @@ export default function Home() {
         <Hero />
         <HeroTextOnly />
         <About />
+        <Achievements />
         <Projects />
         <Skills />
-        <Achievements />
         <Footer />
       </div>
     </main>
