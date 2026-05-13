@@ -28,8 +28,9 @@ export default function Home() {
         <div className="flex justify-center gap-0 text-sm font-medium pointer-events-auto">
           {[
             { name: "About", href: "#about" },
-            { name: "Skills", href: "#skills" },
             { name: "Achievements", href: "#achievements" },
+            { name: "Projects", href: "#projects" },
+            { name: "Skills", href: "#skills" },
             { name: "Contact", href: "#contact" }
           ].map((item) => (
 
@@ -55,9 +56,9 @@ export default function Home() {
       <div className="relative z-10">
         <Hero />
         <About />
+        <Achievements />
         <Projects />
         <Skills />
-        <Achievements />
         <Footer />
       </div>
     </main>

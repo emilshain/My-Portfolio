@@ -2,51 +2,72 @@
 
 import { motion } from "framer-motion";
 
+const stats = [
+  { value: "3×", label: "Hackathon Winner" },
+  { value: "5+", label: "Agencies Reached" },
+  { value: "36hr", label: "Longest Build Sprint" },
+];
+
 export const About = () => {
   return (
     <section id="about" className="relative min-h-screen w-full flex items-center justify-center py-24 px-6 md:px-24">
-      <div className="max-w-4xl w-full grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+      <div className="max-w-5xl w-full space-y-20">
+
         <motion.div
-          initial={{ opacity: 0, x: -50 }}
-          whileInView={{ opacity: 1, x: 0 }}
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.8, ease: "easeOut" }}
           className="space-y-6"
         >
-          <h2 className="text-4xl md:text-6xl font-bold tracking-tighter text-white">
-            Driven by <span className="text-accent">Curiosity</span> and Code.
+          <span className="text-accent font-mono text-xs uppercase tracking-[0.4em] block">The Story</span>
+          <h2 className="text-4xl md:text-6xl font-bold tracking-tighter text-white leading-tight">
+            I build things that matter<br />
+            <span className="text-accent">under pressure</span>.
           </h2>
-          <div className="h-1 w-24 bg-accent" />
         </motion.div>
 
-        <motion.div
-          initial={{ opacity: 0, x: 50 }}
-          whileInView={{ opacity: 1, x: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
-          className="space-y-6 text-muted text-lg leading-relaxed"
-        >
-          <p>
-            I am a Frontend Developer and a <span className="text-white">B.Tech CSE Student</span> at Christ College of Engineering. Driven by the synergy of aesthetics and high-performance code, I specialize in bridging the gap between design and engineering to build interfaces that are as functional as they are beautiful.
-          </p>
-          <p>
-            As a <span className="text-white">3× Hackathon Winner</span>, I have a proven track record of delivering end-to-end solutions — from initial Figma wireframes to full-scale React/Next.js production — under tight deadlines.
-          </p>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-16 items-start">
+          <motion.div
+            initial={{ opacity: 0, x: -30 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8, ease: "easeOut" }}
+            className="space-y-6 text-muted text-lg leading-relaxed"
+          >
+            <p>
+              I&apos;m a <span className="text-white">B.Tech CSE student</span> at Christ College of Engineering, Thrissur — but my real classroom has been the hackathon floor. From 10pm Friday to Sunday morning, shipping full-stack products with real users in mind.
+            </p>
+            <p>
+              I sit at the intersection of design and engineering. I&apos;m as comfortable in <span className="text-white">Figma</span> as I am in a <span className="text-white">Next.js</span> codebase — and I think that&apos;s rare. Great products need someone who can hold both sides of that conversation.
+            </p>
+            <p>
+              When I&apos;m not competing, I&apos;m building: refining my craft, learning what I don&apos;t know, and finding new ways to make interfaces feel alive.
+            </p>
+          </motion.div>
 
-          <div className="pt-4 grid grid-cols-2 gap-4">
-            <div>
-              <p className="text-white font-bold text-2xl">3×</p>
-              <p className="text-xs uppercase tracking-widest text-accent">Hackathon Winner</p>
-            </div>
-            <div>
-              <p className="text-white font-bold text-2xl">CSE</p>
-              <p className="text-xs uppercase tracking-widest">B.Tech Student</p>
-            </div>
-          </div>
-
-
-        </motion.div>
-
+          <motion.div
+            initial={{ opacity: 0, x: 30 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8, delay: 0.15, ease: "easeOut" }}
+            className="space-y-8"
+          >
+            {stats.map((stat, idx) => (
+              <motion.div
+                key={stat.label}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: 0.2 + idx * 0.1 }}
+                className="flex items-center gap-6 pb-8 border-b border-white/5 last:border-0 last:pb-0"
+              >
+                <span className="text-5xl font-bold text-accent tabular-nums">{stat.value}</span>
+                <span className="text-sm uppercase tracking-widest text-white/50 font-mono">{stat.label}</span>
+              </motion.div>
+            ))}
+          </motion.div>
+        </div>
 
       </div>
     </section>

@@ -37,7 +37,7 @@ const achievements = [
 
 export const Achievements = () => {
   return (
-    <section id="achievements" className="relative min-h-screen w-full py-24 px-6 md:px-24 flex flex-col justify-center bg-black">
+    <section id="achievements" className="relative min-h-screen w-full py-24 px-6 md:px-24 flex flex-col justify-center">
       <div className="max-w-5xl mx-auto w-full space-y-16">
         <div className="space-y-4">
           <span className="text-accent font-mono text-xs uppercase tracking-widest">Milestones</span>
