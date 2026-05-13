@@ -2,7 +2,8 @@
 
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
+import { DistortedHeroBackground } from "../Effects/DistortedPixels";
 
 const designations = [
   "Graphic Designer",
@@ -24,14 +25,7 @@ export const Hero = () => {
   return (
     <section id="hero" className="relative h-screen w-full flex items-center justify-center overflow-hidden">
       <div className="absolute inset-0 z-0">
-        <Image
-          src="/hero-background.png"
-          alt="Portrait background"
-          fill
-          priority
-          className="object-cover object-center opacity-80"
-        />
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-[#050505]" />
+        <DistortedHeroBackground imagePath="/hero-background.png" />
       </div>
 
       <div className="relative z-10 w-full h-full flex flex-col justify-end items-center pb-6 md:pb-10">
