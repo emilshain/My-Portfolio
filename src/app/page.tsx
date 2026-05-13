@@ -56,7 +56,7 @@ export default function Home() {
           isDarkText ? "text-black" : "text-white"
         }`}
       >
-        <div className="relative w-6 h-6">
+        <div className="relative w-[1.1em] h-[1.1em]">
           <Image
             src="/logo.png"
             alt="Logo"

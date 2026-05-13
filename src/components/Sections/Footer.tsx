@@ -2,6 +2,8 @@
 
 import { motion } from "framer-motion";
 import { ArrowUp } from "lucide-react";
+import Image from "next/image";
+
 
 const socialLinks = [
   { name: "GitHub", href: "https://github.com/emilshain" },
@@ -36,22 +38,18 @@ export const Footer = () => {
 
         {/* Center: Graphic */}
         <div className="hidden lg:flex absolute left-1/2 top-10 -translate-x-1/2 items-center justify-center pointer-events-none">
-          <motion.svg 
-            width="120" 
-            height="120" 
-            viewBox="0 0 100 100" 
-            className="text-accent"
+          <motion.div 
+            className="w-24 h-24 relative"
             animate={{ rotate: 360 }}
             transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
           >
-            {/* 8-pointed asterisk */}
-            <path 
-              stroke="currentColor" 
-              strokeWidth="3.5" 
-              strokeLinecap="round" 
-              d="M50 10 L50 90 M10 50 L90 50 M21.72 21.72 L78.28 78.28 M21.72 78.28 L78.28 21.72"
+            <Image
+              src="/logo.png"
+              alt="Logo"
+              fill
+              className="object-contain"
             />
-          </motion.svg>
+          </motion.div>
         </div>
 
         {/* Right: Links */}
