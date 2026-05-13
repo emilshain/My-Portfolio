@@ -1,13 +1,15 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Mail, Github, Linkedin, Twitter, ArrowUp, ExternalLink } from "lucide-react";
+import { ArrowUp } from "lucide-react";
+import Image from "next/image";
+
 
 const socialLinks = [
-  { name: "GitHub", href: "https://github.com/emilshain", icon: <Github className="w-5 h-5" /> },
-  { name: "LinkedIn", href: "https://linkedin.com/in/emilshain", icon: <Linkedin className="w-5 h-5" /> },
-  { name: "Twitter", href: "https://twitter.com/emilshain", icon: <Twitter className="w-5 h-5" /> },
-  { name: "Email", href: "mailto:emilshain.official@gmail.com", icon: <Mail className="w-5 h-5" /> },
+  { name: "GitHub", href: "https://github.com/emilshain" },
+  { name: "LinkedIn", href: "https://linkedin.com/in/emilshain" },
+  { name: "Behance", href: "https://www.behance.net/emilshain" },
+  { name: "X", href: "https://x.com/emilshain" },
 ];
 
 export const Footer = () => {
@@ -16,78 +18,101 @@ export const Footer = () => {
   };
 
   return (
-    <footer id="contact" className="relative w-full py-24 px-6 md:px-24 bg-[#050505] border-t border-white/5">
-      <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-16 items-start">
-        <div className="space-y-8">
-          <div className="space-y-4">
-            <h2 className="text-4xl md:text-6xl font-bold tracking-tighter text-white">
-              Let&apos;s build something <span className="text-accent">extraordinary</span>.
-            </h2>
-            <p className="text-muted max-w-md text-lg">
-              Currently available for new opportunities and collaborations. Reach out if you have a project in mind.
-            </p>
-          </div>
-
-          <div className="flex flex-wrap gap-4">
-            {socialLinks.map((link) => (
-              <motion.a
-                key={link.name}
-                href={link.href}
-                target="_blank"
-                rel="noopener noreferrer"
-                whileHover={{ y: -4 }}
-                className="p-4 rounded-2xl bg-white/5 border border-white/10 text-white hover:bg-accent hover:border-accent transition-all duration-300"
-              >
-                {link.icon}
-              </motion.a>
-            ))}
-          </div>
+    <footer
+      id="contact"
+      className="relative flex min-h-screen w-full flex-col justify-between bg-[#050505] px-6 pt-24 pb-0 md:px-16"
+    >
+      {/* Top Section */}
+      <div className="flex w-full flex-col lg:flex-row justify-between items-start mt-12 relative z-10 flex-grow">
+        
+        {/* Left: Contact */}
+        <div className="flex flex-col mb-16 lg:mb-0 lg:w-1/3">
+          <span className="text-white/40 text-sm mb-6 tracking-wide">Contact</span>
+          <a href="mailto:emilshain.official@gmail.com" className="text-3xl md:text-5xl lg:text-4xl xl:text-5xl font-medium tracking-tight hover:text-accent transition-colors duration-300">
+            emilshain.official@gmail.com
+          </a>
+          <a href="tel:+919633285499" className="text-3xl md:text-5xl lg:text-4xl xl:text-5xl font-medium tracking-tight mt-4 hover:text-accent transition-colors duration-300">
+            +91 96332 85499
+          </a>
         </div>
 
-        <div className="grid grid-cols-2 gap-12">
-          <div className="space-y-6">
-            <h4 className="text-xs uppercase tracking-widest text-muted font-mono">Navigation</h4>
-            <ul className="space-y-4">
-              {["About", "Achievements", "Projects", "Skills"].map((item) => (
-                <li key={item}>
-                  <a 
-                    href={`#${item.toLowerCase()}`} 
-                    className="text-white/60 hover:text-white transition-colors flex items-center gap-2 group"
-                  >
-                    {item}
-                    <ExternalLink className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity" />
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </div>
+        {/* Center: Graphic */}
+        <div className="hidden lg:flex absolute left-1/2 top-10 -translate-x-1/2 items-center justify-center pointer-events-none">
+          <motion.div 
+            className="w-24 h-24 relative"
+            animate={{ rotate: 360 }}
+            transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
+          >
+            <Image
+              src="/logo.png"
+              alt="Logo"
+              fill
+              className="object-contain"
+            />
+          </motion.div>
+        </div>
 
-          <div className="space-y-6">
-            <h4 className="text-xs uppercase tracking-widest text-muted font-mono">Contact</h4>
-            <div className="space-y-4">
-              <p className="text-white/60">Thrissur, Kerala, India</p>
-              <a href="mailto:emilshain.official@gmail.com" className="text-accent hover:underline block">emilshain.official@gmail.com</a>
-              <p className="text-white/40 text-sm">+91 96332 85499</p>
+        {/* Right: Links */}
+        <div className="flex gap-16 md:gap-24 lg:w-1/3 lg:justify-end">
+          {/* Pages */}
+          <div className="flex flex-col">
+            <span className="text-white/40 text-sm mb-6 tracking-wide">Pages</span>
+            <div className="flex flex-col gap-3">
+              {['Home', 'About', 'Skills', 'Achievements'].map((item) => (
+                <a 
+                  href={`#${item.toLowerCase()}`} 
+                  key={item} 
+                  className="text-lg text-white/80 hover:text-white hover:underline underline-offset-4 decoration-accent transition-all"
+                >
+                  {item}
+                </a>
+              ))}
+            </div>
+          </div>
+          
+          {/* Socials */}
+          <div className="flex flex-col">
+            <span className="text-white/40 text-sm mb-6 tracking-wide">Socials</span>
+            <div className="flex flex-col gap-3">
+              {socialLinks.map((link) => (
+                <a 
+                  href={link.href} 
+                  target="_blank" 
+                  rel="noopener noreferrer" 
+                  key={link.name} 
+                  className="text-lg text-white/80 hover:text-white hover:underline underline-offset-4 decoration-accent transition-all"
+                >
+                  {link.name}
+                </a>
+              ))}
             </div>
           </div>
         </div>
       </div>
 
-
-      <div className="max-w-7xl mx-auto mt-24 pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-8">
-        <p className="text-muted text-xs font-mono">
-          © {new Date().getFullYear()} EMIL SHAIN. ALL RIGHTS RESERVED.
-        </p>
+      {/* Bottom Section */}
+      <div className="flex flex-col w-full mt-auto relative z-10 pt-16">
+        <div className="flex flex-col md:flex-row justify-between items-center w-full py-6 border-t border-white/10">
+          <p className="text-white/60 text-sm">
+            © {new Date().getFullYear()} Emil Shain
+          </p>
+          <button 
+            onClick={scrollToTop} 
+            className="mt-4 md:mt-0 bg-white/5 hover:bg-white/10 px-6 py-2 rounded-full text-sm text-white/80 transition-colors border border-white/10 flex items-center gap-2"
+          >
+            Back to top <ArrowUp className="w-4 h-4" />
+          </button>
+        </div>
         
-        <button
-          onClick={scrollToTop}
-          className="group flex items-center gap-2 text-xs uppercase tracking-widest text-white/40 hover:text-white transition-colors"
-        >
-          Back to top
-          <div className="p-2 rounded-full border border-white/10 group-hover:bg-white/10 transition-colors">
-            <ArrowUp className="w-4 h-4" />
-          </div>
-        </button>
+        {/* Huge Name */}
+        <div className="w-full mt-8 -mx-6 md:-mx-16 px-0 overflow-clip">
+          <h2 
+            data-cursor="morph"
+            className="text-[14vw] md:text-[16vw] font-bold leading-[0.9] tracking-tighter text-white text-center select-none whitespace-nowrap uppercase w-full"
+          >
+            Emil Shain
+          </h2>
+        </div>
       </div>
     </footer>
   );
