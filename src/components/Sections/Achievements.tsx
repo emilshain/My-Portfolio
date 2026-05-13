@@ -37,11 +37,11 @@ const achievements = [
 
 export const Achievements = () => {
   return (
-    <section id="achievements" className="relative min-h-screen w-full py-24 px-6 md:px-24 flex flex-col justify-center bg-black">
+    <section id="achievements" className="relative min-h-screen w-full py-24 px-6 md:px-24 flex flex-col justify-center bg-white">
       <div className="max-w-5xl mx-auto w-full space-y-16">
         <div className="space-y-4">
           <span className="text-accent font-mono text-xs uppercase tracking-widest">Milestones</span>
-          <h2 className="text-4xl md:text-7xl font-bold tracking-tighter text-white">Recognition</h2>
+          <h2 className="text-4xl md:text-7xl font-bold tracking-tighter text-black">Recognition</h2>
         </div>
 
         <div className="space-y-8">
@@ -52,18 +52,18 @@ export const Achievements = () => {
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: idx * 0.1 }}
-              className="group relative grid grid-cols-1 md:grid-cols-[auto_1fr_auto] items-center gap-8 p-8 rounded-3xl border border-white/5 bg-white/[0.02] hover:bg-white/[0.05] transition-all"
+              className="group relative grid grid-cols-1 md:grid-cols-[auto_1fr_auto] items-center gap-8 p-8 rounded-3xl border border-black/5 bg-black/[0.02] hover:bg-black/[0.05] transition-all"
             >
-              <div className="p-4 rounded-2xl bg-black/40 group-hover:scale-110 transition-transform">
+              <div className="p-4 rounded-2xl bg-white shadow-sm group-hover:scale-110 transition-transform">
                 {item.icon}
               </div>
               <div className="space-y-1">
-                <h3 className="text-xl md:text-2xl font-bold text-white">{item.title}</h3>
-                <p className="text-muted text-sm md:text-base">{item.description}</p>
-                <p className="text-accent/60 text-xs font-mono uppercase tracking-tighter">{item.organization}</p>
+                <h3 className="text-xl md:text-2xl font-bold text-black">{item.title}</h3>
+                <p className="text-black/60 text-sm md:text-base">{item.description}</p>
+                <p className="text-accent/80 text-xs font-mono uppercase tracking-tighter font-semibold">{item.organization}</p>
               </div>
               <div className="text-right hidden md:block">
-                <span className="text-muted font-mono text-sm">{item.date}</span>
+                <span className="text-black/40 font-mono text-sm">{item.date}</span>
               </div>
             </motion.div>
           ))}

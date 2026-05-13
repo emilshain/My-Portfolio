@@ -24,7 +24,7 @@ const projects = [
 
 export const Projects = () => {
   return (
-    <section id="projects" className="relative min-h-screen w-full py-24 px-6 md:px-24 flex flex-col justify-center overflow-hidden">
+    <section id="projects" className="relative min-h-screen w-full py-24 px-6 md:px-24 flex flex-col justify-center overflow-hidden bg-[#050505]">
       <div className="max-w-6xl mx-auto w-full space-y-16">
         <div className="space-y-4">
           <span className="text-accent font-mono text-xs uppercase tracking-widest">Selected Works</span>

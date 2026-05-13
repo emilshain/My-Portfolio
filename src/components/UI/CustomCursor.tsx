@@ -3,86 +3,86 @@
 import { useEffect, useRef, useState } from "react";
 import { motion, useMotionValue, useSpring } from "framer-motion";
 
-const INTERACTIVE_SELECTOR = "a, button, [role='button'], input[type='button'], input[type='submit']";
+const INTERACTIVE_SELECTOR = "a, button, [role='button'], input, [data-cursor]";
 const BASE_SIZE = 14;
 const POINTER_SIZE = 40;
-const SQUARE_RADIUS = 0;
+const MORPH_PADDING = 16;
 
 export const CustomCursor = () => {
-  const [isMorphedToElement, setIsMorphedToElement] = useState(false);
-  const isMorphedRef = useRef(false);
+  const [activeElement, setActiveElement] = useState<HTMLElement | null>(null);
 
   const targetX = useMotionValue(-100);
   const targetY = useMotionValue(-100);
   const targetWidth = useMotionValue(BASE_SIZE);
   const targetHeight = useMotionValue(BASE_SIZE);
-  const targetRadius = useMotionValue(SQUARE_RADIUS);
+  const targetRadius = useMotionValue(BASE_SIZE / 2);
 
-  const mouseX = useSpring(targetX, { stiffness: 700, damping: 45, mass: 0.2 });
-  const mouseY = useSpring(targetY, { stiffness: 700, damping: 45, mass: 0.2 });
-  const cursorWidth = useSpring(targetWidth, { stiffness: 900, damping: 40, mass: 0.18 });
-  const cursorHeight = useSpring(targetHeight, { stiffness: 900, damping: 40, mass: 0.18 });
-  const cursorRadius = useSpring(targetRadius, { stiffness: 1200, damping: 45, mass: 0.12 });
+  const mouseX = useSpring(targetX, { stiffness: 600, damping: 40, mass: 0.2 });
+  const mouseY = useSpring(targetY, { stiffness: 600, damping: 40, mass: 0.2 });
+  const cursorWidth = useSpring(targetWidth, { stiffness: 800, damping: 40, mass: 0.2 });
+  const cursorHeight = useSpring(targetHeight, { stiffness: 800, damping: 40, mass: 0.2 });
+  const cursorRadius = useSpring(targetRadius, { stiffness: 1000, damping: 50, mass: 0.1 });
 
   useEffect(() => {
-    const updateMorphState = (next: boolean) => {
-      if (isMorphedRef.current !== next) {
-        isMorphedRef.current = next;
-        setIsMorphedToElement(next);
+    const handleMouseMove = (e: MouseEvent) => {
+      if (activeElement) {
+        const rect = activeElement.getBoundingClientRect();
+        const slack = 4;
+        const offsetX = (e.clientX - (rect.left + rect.width / 2)) / rect.width * slack;
+        const offsetY = (e.clientY - (rect.top + rect.height / 2)) / rect.height * slack;
+        
+        targetX.set(rect.left - MORPH_PADDING / 2 + offsetX);
+        targetY.set(rect.top - MORPH_PADDING / 2 + offsetY);
+        targetWidth.set(rect.width + MORPH_PADDING);
+        targetHeight.set(rect.height + MORPH_PADDING);
+        targetRadius.set(0);
+      } else {
+        const hoveredElement = document.elementFromPoint(e.clientX, e.clientY) as HTMLElement | null;
+        const isPointer = hoveredElement ? window.getComputedStyle(hoveredElement).cursor === "pointer" : false;
+        const size = isPointer ? POINTER_SIZE : BASE_SIZE;
+
+        targetX.set(e.clientX - size / 2);
+        targetY.set(e.clientY - size / 2);
+        targetWidth.set(size);
+        targetHeight.set(size);
+        targetRadius.set(size / 2);
       }
     };
 
-    const updatePosition = (e: MouseEvent) => {
-      const hoveredElement = document.elementFromPoint(e.clientX, e.clientY) as HTMLElement | null;
-      const interactiveTarget = hoveredElement?.closest(INTERACTIVE_SELECTOR) as HTMLElement | null;
-
-      if (interactiveTarget) {
-        updateMorphState(true);
-        const rect = interactiveTarget.getBoundingClientRect();
-        const computedRadius = Number.parseFloat(getComputedStyle(interactiveTarget).borderTopLeftRadius || "0");
-        targetX.set(rect.left);
-        targetY.set(rect.top);
-        targetWidth.set(rect.width);
-        targetHeight.set(rect.height);
-        targetRadius.set(Number.isNaN(computedRadius) ? SQUARE_RADIUS : computedRadius);
-        return;
+    const handleMouseOver = (e: MouseEvent) => {
+      const target = (e.target as HTMLElement).closest(INTERACTIVE_SELECTOR) as HTMLElement | null;
+      if (target) {
+        setActiveElement(target);
       }
-
-      updateMorphState(false);
-      const isPointer = hoveredElement ? getComputedStyle(hoveredElement).cursor === "pointer" : false;
-      const size = isPointer ? POINTER_SIZE : BASE_SIZE;
-
-      targetX.set(e.clientX - size / 2);
-      targetY.set(e.clientY - size / 2);
-      targetWidth.set(size);
-      targetHeight.set(size);
-      targetRadius.set(SQUARE_RADIUS);
     };
 
-    const resetPosition = () => {
-      updateMorphState(false);
-      targetX.set(-100);
-      targetY.set(-100);
+    const handleMouseOut = (e: MouseEvent) => {
+      const target = (e.target as HTMLElement).closest(INTERACTIVE_SELECTOR) as HTMLElement | null;
+      if (target && target === activeElement) {
+        setActiveElement(null);
+      }
     };
 
-    window.addEventListener("mousemove", updatePosition);
-    window.addEventListener("mouseout", resetPosition);
+    window.addEventListener("mousemove", handleMouseMove);
+    window.addEventListener("mouseover", handleMouseOver);
+    window.addEventListener("mouseout", handleMouseOut);
+    
     return () => {
-      window.removeEventListener("mousemove", updatePosition);
-      window.removeEventListener("mouseout", resetPosition);
+      window.removeEventListener("mousemove", handleMouseMove);
+      window.removeEventListener("mouseover", handleMouseOver);
+      window.removeEventListener("mouseout", handleMouseOut);
     };
-  }, [targetX, targetY, targetWidth, targetHeight, targetRadius]);
+  }, [activeElement, targetX, targetY, targetWidth, targetHeight, targetRadius]);
 
   return (
     <motion.div
-      className="fixed top-0 left-0 bg-white pointer-events-none z-[999] mix-blend-difference will-change-transform"
+      className="fixed top-0 left-0 pointer-events-none z-[999] bg-white will-change-transform mix-blend-difference"
       style={{
         x: mouseX,
         y: mouseY,
         width: cursorWidth,
         height: cursorHeight,
-        borderRadius: isMorphedToElement ? cursorRadius : SQUARE_RADIUS,
-        mixBlendMode: isMorphedToElement ? "normal" : "difference",
+        borderRadius: cursorRadius,
       }}
     />
   );
