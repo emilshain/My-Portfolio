@@ -3,6 +3,9 @@
 import { motion } from "framer-motion";
 import { ArrowUp } from "lucide-react";
 import Image from "next/image";
+import { Typewriter } from "@/components/UI/Typewriter";
+import { useInView } from "framer-motion";
+import { useRef } from "react";
 
 
 const socialLinks = [
@@ -13,6 +16,10 @@ const socialLinks = [
 ];
 
 export const Footer = () => {
+  const footerRef = useRef(null);
+  const nameRef = useRef(null);
+  const isInView = useInView(nameRef, { once: false, amount: 0.5 });
+
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
@@ -20,6 +27,7 @@ export const Footer = () => {
   return (
     <footer
       id="contact"
+      ref={footerRef}
       className="relative flex min-h-screen w-full flex-col justify-between bg-[#050505] px-6 pt-24 pb-0 md:px-16"
     >
       {/* Top Section */}
@@ -58,13 +66,18 @@ export const Footer = () => {
           <div className="flex flex-col">
             <span className="text-white/40 text-sm mb-6 tracking-wide">Pages</span>
             <div className="flex flex-col gap-3">
-              {['Home', 'About', 'Skills', 'Achievements'].map((item) => (
+              {['Home', 'About', 'Skills', 'Achievements'].map((item, index) => (
                 <a 
                   href={`#${item.toLowerCase()}`} 
                   key={item} 
                   className="text-lg text-white/80 hover:text-white hover:underline underline-offset-4 decoration-accent transition-all"
                 >
-                  {item}
+                  <Typewriter 
+                    text={item} 
+                    isUntyping={!isInView} 
+                    speed={0.02} 
+                    delay={index * 0.05} 
+                  />
                 </a>
               ))}
             </div>
@@ -105,12 +118,17 @@ export const Footer = () => {
         </div>
         
         {/* Huge Name */}
-        <div className="w-full mt-8 -mx-6 md:-mx-16 px-0 overflow-clip">
+        <div className="w-full mt-8 -mx-6 md:-mx-16 px-0 overflow-clip" ref={nameRef}>
           <h2 
             data-cursor="morph"
             className="text-[14vw] md:text-[16vw] font-bold leading-[0.9] tracking-tighter text-white text-center select-none whitespace-nowrap uppercase w-full"
           >
-            Emil Shain
+            <Typewriter 
+              text="Emil Shain" 
+              isUntyping={!isInView} 
+              speed={0.02} 
+              delay={0}
+            />
           </h2>
         </div>
       </div>

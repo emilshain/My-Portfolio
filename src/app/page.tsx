@@ -11,12 +11,18 @@ import { Projects } from "@/components/Sections/Projects";
 import { Footer } from "@/components/Sections/Footer";
 import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
+import { Typewriter } from "@/components/UI/Typewriter";
 
 
 
 export default function Home() {
   const [isDarkText, setIsDarkText] = useState(false);
+  const [isFooterVisible, setIsFooterVisible] = useState(false);
   const sectionsRef = useRef<HTMLDivElement>(null);
+
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
 
   useEffect(() => {
     const sections = document.querySelectorAll("section, footer");
@@ -43,7 +49,23 @@ export default function Home() {
 
     sections.forEach((section) => observer.observe(section));
 
-    return () => observer.disconnect();
+    // Dedicated observer for footer name to trigger seamless navbar transition
+    const footerObserver = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          setIsFooterVisible(entry.isIntersecting);
+        });
+      },
+      { root: null, threshold: 0.5 }
+    );
+
+    const footerNameElement = document.querySelector("#contact h2");
+    if (footerNameElement) footerObserver.observe(footerNameElement);
+
+    return () => {
+      observer.disconnect();
+      footerObserver.disconnect();
+    };
   }, []);
 
   return (
@@ -56,7 +78,7 @@ export default function Home() {
           isDarkText ? "text-black" : "text-white"
         }`}
       >
-        <div className="relative w-[1.1em] h-[1.1em]">
+        <div className={`relative w-[1.1em] h-[1.1em] transition-opacity duration-300 ${isFooterVisible ? 'opacity-0' : 'opacity-100'}`}>
           <Image
             src="/logo.png"
             alt="Logo"
@@ -64,9 +86,19 @@ export default function Home() {
             className="object-contain"
           />
         </div>
-        <h1 className="text-xl font-bold tracking-tighter">
-          Emil Shain
-        </h1>
+        <button
+          type="button"
+          onClick={scrollToTop}
+          className="pointer-events-auto text-xl font-bold tracking-tighter text-left cursor-pointer"
+          aria-label="Scroll to top"
+        >
+          <Typewriter 
+            text="Emil Shain" 
+            isUntyping={isFooterVisible} 
+            speed={0.02}
+            delay={0}
+          />
+        </button>
       </div>
 
       {/* Navigation - Overlay */}
@@ -78,7 +110,7 @@ export default function Home() {
             { name: "Projects", href: "#projects" },
             { name: "Skills", href: "#skills" },
             { name: "Contact", href: "#contact" }
-          ].map((item) => (
+          ].map((item, index) => (
             <a
               key={item.name}
               href={item.href}
@@ -86,7 +118,12 @@ export default function Home() {
                 isDarkText ? "text-black" : "text-white"
               }`}
             >
-              {item.name}
+              <Typewriter 
+                text={item.name} 
+                isUntyping={isFooterVisible} 
+                speed={0.02}
+                delay={index * 0.05}
+              />
             </a>
           ))}
         </div>
