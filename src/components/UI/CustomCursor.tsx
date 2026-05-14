@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { motion, useMotionValue, useSpring } from "framer-motion";
+import { motion, useMotionValue } from "framer-motion";
 
 const INTERACTIVE_SELECTOR = "a, button, [role='button'], input, [data-cursor]";
 const BASE_SIZE = 14;
@@ -16,12 +16,6 @@ export const CustomCursor = () => {
   const targetWidth = useMotionValue(BASE_SIZE);
   const targetHeight = useMotionValue(BASE_SIZE);
   const targetRadius = useMotionValue(BASE_SIZE / 2);
-
-  const mouseX = useSpring(targetX, { stiffness: 600, damping: 40, mass: 0.2 });
-  const mouseY = useSpring(targetY, { stiffness: 600, damping: 40, mass: 0.2 });
-  const cursorWidth = useSpring(targetWidth, { stiffness: 800, damping: 40, mass: 0.2 });
-  const cursorHeight = useSpring(targetHeight, { stiffness: 800, damping: 40, mass: 0.2 });
-  const cursorRadius = useSpring(targetRadius, { stiffness: 1000, damping: 50, mass: 0.1 });
 
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
@@ -78,11 +72,11 @@ export const CustomCursor = () => {
     <motion.div
       className="fixed top-0 left-0 pointer-events-none z-[999] bg-white will-change-transform mix-blend-difference"
       style={{
-        x: mouseX,
-        y: mouseY,
-        width: cursorWidth,
-        height: cursorHeight,
-        borderRadius: cursorRadius,
+        x: targetX,
+        y: targetY,
+        width: targetWidth,
+        height: targetHeight,
+        borderRadius: targetRadius,
       }}
     />
   );
