@@ -2,7 +2,7 @@
 
 @theme {
   --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sub: var(--font-manrope);
   --color-accent: #f74507;
 }
 

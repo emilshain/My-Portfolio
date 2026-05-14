@@ -28,14 +28,16 @@ export const Footer = () => {
     <footer
       id="contact"
       ref={footerRef}
-      className="relative flex h-screen w-full flex-col justify-between bg-[#050505] px-6 pt-0 pb-0 md:px-16"
+      className="relative flex h-screen w-full flex-col justify-between bg-[#050505] px-6 pt-0 pb-0 md:px-16 overflow-hidden"
     >
       {/* Top Section */}
       <div className="flex w-full flex-col lg:flex-row justify-between items-start mt-8 relative z-10 flex-grow">
         
         {/* Left: Contact */}
         <div className="flex flex-col mb-16 lg:mb-0 lg:w-1/3">
-          <span className="text-white/40 text-sm mb-6 tracking-wide">Contact</span>
+          <div className="text-white/40 text-sm mb-6 h-5">
+            <Typewriter text="Contact" isUntyping={!isInView} speed={0.02} />
+          </div>
           <a href="mailto:emilshain.official@gmail.com" className="text-3xl md:text-5xl lg:text-4xl xl:text-5xl font-medium tracking-tight hover:text-accent transition-colors duration-300">
             emilshain.official@gmail.com
           </a>
@@ -64,7 +66,9 @@ export const Footer = () => {
         <div className="flex gap-16 md:gap-24 lg:w-1/3 lg:justify-end">
           {/* Pages */}
           <div className="flex flex-col">
-            <span className="text-white/40 text-sm mb-6 tracking-wide">Pages</span>
+            <div className="text-white/40 text-sm mb-6 h-5">
+              <Typewriter text="Pages" isUntyping={!isInView} speed={0.02} delay={0.1} />
+            </div>
             <div className="flex flex-col gap-3">
               {['Home', 'About', 'Skills', 'Achievements'].map((item, index) => (
                 <a 
@@ -85,7 +89,7 @@ export const Footer = () => {
           
           {/* Socials */}
           <div className="flex flex-col">
-            <span className="text-white/40 text-sm mb-6 tracking-wide">Socials</span>
+            <span className="text-white/40 text-sm mb-6">Socials</span>
             <div className="flex flex-col gap-3">
               {socialLinks.map((link) => (
                 <a 

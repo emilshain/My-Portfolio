@@ -12,14 +12,32 @@ import { Footer } from "@/components/Sections/Footer";
 import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import { Typewriter } from "@/components/UI/Typewriter";
+import { motion, useScroll, useTransform } from "framer-motion";
 
 
 
 export default function Home() {
   const [isDarkText, setIsDarkText] = useState(false);
   const [isFooterVisible, setIsFooterVisible] = useState(false);
+  const [isHero, setIsHero] = useState(true);
   const [currentTime, setCurrentTime] = useState("");
   const sectionsRef = useRef<HTMLDivElement>(null);
+  
+  const [viewportHeight, setViewportHeight] = useState(800);
+  const { scrollY } = useScroll();
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      setViewportHeight(window.innerHeight);
+      const handleResize = () => setViewportHeight(window.innerHeight);
+      window.addEventListener("resize", handleResize);
+      return () => window.removeEventListener("resize", handleResize);
+    }
+  }, []);
+
+  // Map scroll from 0 to window height (hero view) to logo size
+  // 10rem = 160px, 1.25rem = 20px (~w-[1.1em])
+  const logoSize = useTransform(scrollY, [0, viewportHeight], ["10rem", "1.25rem"]);
 
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -38,6 +56,8 @@ export default function Home() {
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
           const id = entry.target.id;
+          setIsHero(id === "hero");
+          
           // Check if section should have dark text (white background sections)
           if (id === "about" || id === "achievements") {
             setIsDarkText(true);
@@ -96,14 +116,17 @@ export default function Home() {
           isDarkText ? "text-black" : "text-white"
         }`}
       >
-        <div className={`relative w-[1.1em] h-[1.1em] transition-opacity duration-300 ${isFooterVisible ? 'opacity-0' : 'opacity-100'}`}>
+        <motion.div 
+          style={{ width: logoSize, height: logoSize }}
+          className={`relative transition-opacity duration-500 ease-in-out ${isFooterVisible ? 'opacity-0' : 'opacity-100'}`}
+        >
           <Image
             src="/logo.png"
             alt="Logo"
             fill
             className="object-contain"
           />
-        </div>
+        </motion.div>
         <button
           type="button"
           onClick={scrollToTop}
@@ -112,7 +135,7 @@ export default function Home() {
         >
           <Typewriter 
             text="Emil Shain" 
-            isUntyping={isFooterVisible} 
+            isUntyping={isFooterVisible || isHero} 
             speed={0.02}
             delay={0}
           />

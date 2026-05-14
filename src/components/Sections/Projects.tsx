@@ -27,7 +27,7 @@ export const Projects = () => {
     <section id="projects" className="relative min-h-screen w-full py-24 px-6 md:px-24 flex flex-col justify-center overflow-hidden bg-[#050505]">
       <div className="max-w-6xl mx-auto w-full space-y-16">
         <div className="space-y-4">
-          <span className="text-accent font-mono text-xs uppercase tracking-widest">Selected Works</span>
+          <span className="text-accent font-sub text-xs uppercase">Selected Works</span>
           <h2 className="text-4xl md:text-7xl font-bold tracking-tighter text-white">Innovation Projects</h2>
         </div>
 
@@ -59,7 +59,7 @@ export const Projects = () => {
                 <h3 className="text-2xl font-bold text-white flex items-center gap-3">
                   {project.title}
                 </h3>
-                <p className="text-accent font-mono text-xs uppercase tracking-tighter">{project.subtitle}</p>
+                <p className="text-accent font-sub text-xs uppercase tracking-tighter">{project.subtitle}</p>
                 <p className="text-muted text-sm leading-relaxed mt-4">
                   {project.description}
                 </p>
@@ -67,7 +67,7 @@ export const Projects = () => {
 
               <div className="flex flex-wrap gap-2 mt-auto">
                 {project.tech.map((t) => (
-                  <span key={t} className="px-3 py-1 rounded-full bg-white/5 border border-white/5 text-[10px] text-white/40 uppercase tracking-widest">
+                  <span key={t} className="px-3 py-1 rounded-full bg-white/5 border border-white/5 text-[10px] text-white/40 uppercase">
                     {t}
                   </span>
                 ))}
@@ -76,7 +76,7 @@ export const Projects = () => {
               {project.awards && (
                 <div className="pt-4 border-t border-white/5 flex items-center gap-2">
                   <Zap className="w-3 h-3 text-accent" />
-                  <span className="text-[10px] text-white/60 uppercase font-bold tracking-widest">{project.awards[0]}</span>
+                  <span className="text-[10px] text-white/60 uppercase font-bold font-sub">{project.awards[0]}</span>
                 </div>
               )}
             </motion.div>

@@ -19,8 +19,9 @@ export const About = () => {
           viewport={{ once: true }}
           transition={{ duration: 0.8, ease: "easeOut" }}
           className="space-y-6"
+          data-speed="0.1"
         >
-          <span className="text-accent font-mono text-xs uppercase tracking-[0.4em] block">The Story</span>
+          <span className="text-accent font-sub text-xs uppercase block">The Story</span>
           <h2 className="text-4xl md:text-6xl font-bold tracking-tighter text-white leading-tight">
             I build things that matter<br />
             <span className="text-accent">under pressure</span>.
@@ -63,7 +64,7 @@ export const About = () => {
                 className="flex items-center gap-6 pb-8 border-b border-white/5 last:border-0 last:pb-0"
               >
                 <span className="text-5xl font-bold text-accent tabular-nums">{stat.value}</span>
-                <span className="text-sm uppercase tracking-widest text-white/50 font-mono">{stat.label}</span>
+                <span className="text-sm uppercase text-white/50 font-sub">{stat.label}</span>
               </motion.div>
             ))}
           </motion.div>

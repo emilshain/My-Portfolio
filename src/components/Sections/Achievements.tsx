@@ -43,7 +43,7 @@ export const Achievements = () => {
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              className="text-accent font-mono text-sm uppercase tracking-[0.3em]"
+              className="text-accent font-sub text-sm uppercase"
             >
               Excellence & Impact
             </motion.span>
@@ -94,8 +94,8 @@ export const Achievements = () => {
               </div>
 
               <div className="mt-8 flex items-center justify-between">
-                <span className="text-accent/60 text-xs font-mono uppercase tracking-widest">{item.organization}</span>
-                <span className="text-muted/40 font-mono text-xs">{item.date}</span>
+                <span className="text-accent/60 text-xs font-sub uppercase">{item.organization}</span>
+                <span className="text-muted/40 font-sub text-xs">{item.date}</span>
               </div>
 
               {/* Decorative Background Gradient */}
