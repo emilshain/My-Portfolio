@@ -80,7 +80,7 @@ const DistortionPlane = ({ imagePath }: { imagePath: string }) => {
     time: { value: 0 },
     uTexture: { value: texture },
     uDataTexture: { value: dataTexture },
-    uOpacity: { value: 0.8 }, // Restored premium opacity
+    uOpacity: { value: 1.0 }, // Full opacity for maximum clarity
     resolution: { value: new THREE.Vector4() }
   }), [texture, dataTexture]);
 
@@ -170,7 +170,7 @@ export const DistortedHeroBackground = ({ imagePath }: { imagePath: string }) =>
           <DistortionPlane imagePath={imagePath} />
         </React.Suspense>
       </Canvas>
-      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-[#050505] pointer-events-none" />
+
     </div>
   );
 };

@@ -7,10 +7,59 @@
 }
 
 :root {
-  --background: #050505;
-  --foreground: #ededed;
+  --background: #000000;
+  --foreground: #ffffff;
+  --foreground-muted: rgba(255, 255, 255, 0.5);
+  --border-subtle: rgba(255, 255, 255, 0.05);
+  --bg-subtle: rgba(255, 255, 255, 0.02);
   --accent: #f74507;
   --accent-foreground: #ffffff;
+}
+
+[data-theme="light"] {
+  --background: #ffffff;
+  --foreground: #000000;
+  --foreground-muted: rgba(0, 0, 0, 0.5);
+  --border-subtle: rgba(0, 0, 0, 0.05);
+  --bg-subtle: rgba(0, 0, 0, 0.02);
+}
+
+.text-dynamic {
+  color: var(--foreground);
+}
+
+.text-dynamic-muted {
+  color: var(--foreground-muted);
+}
+
+.border-dynamic {
+  border-color: var(--border-subtle);
+}
+
+.bg-dynamic-subtle {
+  background-color: var(--bg-subtle);
+}
+
+/* Force tailwind classes to follow the theme variables within a themed section */
+[data-theme] .text-white {
+  color: var(--foreground) !important;
+}
+
+[data-theme] .text-muted,
+[data-theme] .text-white\/50,
+[data-theme] .text-white\/40,
+[data-theme] .text-white\/80 {
+  color: var(--foreground-muted) !important;
+}
+
+[data-theme] .border-white\/5,
+[data-theme] .border-white\/10 {
+  border-color: var(--border-subtle) !important;
+}
+
+[data-theme] .bg-white\/\[0\.02\],
+[data-theme] .bg-white\/\[0\.04\] {
+  background-color: var(--bg-subtle) !important;
 }
 
 html {
@@ -64,4 +113,28 @@ body {
 
 ::-webkit-scrollbar-thumb {
   @apply bg-white/20 rounded-full hover:bg-white/30 transition-colors;
+}
+
+/* Masked Text Hover Effect */
+.content-span {
+  opacity: 0;
+}
+.content-span::after {
+  content: attr(data-char);
+  position: absolute;
+  top: 100%;
+  left: 0;
+  white-space: pre;
+}
+
+/* Logo Spin Animation */
+.logo-spin {
+  animation: logo-spin-anim 25s linear infinite;
+}
+.logo-spin:hover {
+  animation-play-state: paused;
+}
+@keyframes logo-spin-anim {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
 }

@@ -37,7 +37,7 @@ export const HeroTextOnly = () => {
   return (
     <section id="hero-text" ref={sectionRef} className="relative min-h-screen w-full flex items-center justify-center bg-transparent px-6 overflow-hidden">
       <div className="max-w-6xl mx-auto flex flex-col items-center text-center">
-        <h2 className="text-5xl md:text-8xl lg:text-9xl font-bold tracking-tighter text-white uppercase leading-[0.85] text-center flex flex-col items-center">
+        <h2 className="text-5xl md:text-8xl lg:text-9xl font-bold tracking-tighter text-black uppercase leading-[0.85] text-center flex flex-col items-center">
           
           {/* Line 1: Designing */}
           <div className="overflow-hidden w-fit">
@@ -50,7 +50,7 @@ export const HeroTextOnly = () => {
               Designing
             </motion.span>
           </div>
-
+ 
           {/* Line 2: [Animated Word] that */}
           <div className="overflow-hidden w-fit">
             <motion.div
@@ -69,7 +69,7 @@ export const HeroTextOnly = () => {
                     animate={{ y: "0%" }}
                     exit={{ y: "-100%" }}
                     transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-                    className="text-accent block whitespace-nowrap absolute inset-0"
+                    className="text-white block whitespace-nowrap absolute inset-0"
                   >
                     {currentWord}
                   </motion.span>
@@ -78,7 +78,7 @@ export const HeroTextOnly = () => {
               <span>that</span>
             </motion.div>
           </div>
-
+ 
           {/* Line 3: just */}
           <div className="overflow-hidden w-fit">
             <motion.span
@@ -90,7 +90,7 @@ export const HeroTextOnly = () => {
               just
             </motion.span>
           </div>
-
+ 
           {/* Line 4: feel right. */}
           <div className="overflow-hidden w-fit">
             <motion.span

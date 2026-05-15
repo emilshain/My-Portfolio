@@ -57,7 +57,7 @@ export const Hero = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
           >
-            <h1 className="text-[18vw] font-bold tracking-tighter text-white leading-[1.1] uppercase select-none whitespace-nowrap drop-shadow-2xl text-right flex justify-end">
+            <h1 className="text-[18vw] font-bold tracking-tighter text-white leading-[1.1] uppercase select-none whitespace-nowrap text-right flex justify-end">
               {"Emil Shain".split("").map((char, i) => (
                 <motion.span
                   key={i}

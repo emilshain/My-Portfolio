@@ -5,13 +5,13 @@ import { LoadingScreen } from "@/components/UI/LoadingScreen";
 import { Hero } from "@/components/Sections/Hero";
 import { HeroTextOnly } from "@/components/Sections/HeroTextOnly";
 import { About } from "@/components/Sections/About";
-import { Skills } from "@/components/Sections/Skills";
 import { Achievements } from "@/components/Sections/Achievements";
-import { Projects } from "@/components/Sections/Projects";
+import { Works } from "@/components/Sections/Works";
 import { Footer } from "@/components/Sections/Footer";
 import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import { Typewriter } from "@/components/UI/Typewriter";
+import { MaskedText } from "@/components/UI/MaskedText";
 import { motion, useScroll, useTransform } from "framer-motion";
 
 
@@ -58,8 +58,8 @@ export default function Home() {
           const id = entry.target.id;
           setIsHero(id === "hero");
           
-          // Check if section should have dark text (white background sections)
-          if (id === "about" || id === "achievements") {
+          // Check if section should have dark text (white/orange background sections)
+          if (id === "about" || id === "projects" || id === "hero-text") {
             setIsDarkText(true);
           } else {
             setIsDarkText(false);
@@ -106,8 +106,26 @@ export default function Home() {
     };
   }, []);
 
+  const backgrounds = [
+    "#000000",      // Hero
+    "#f74507",      // HeroTextOnly (Orange Accent)
+    "#ffffff",      // About (White)
+    "#000000",      // Achievements (Strip)
+    "#f5f5f5",      // Works (Off-white)
+    "#000000",      // Footer (Dark)
+  ];
+
+  const sections = [
+    <Hero key="hero" />,
+    <HeroTextOnly key="hero-text-only" />,
+    <About key="about" />,
+    <Achievements key="achievements" />,
+    <Works key="works" />,
+    <Footer key="footer" />,
+  ];
+
   return (
-    <main className="relative bg-[#050505] selection:bg-accent/30 overflow-x-clip">
+    <main className="relative selection:bg-accent/30 overflow-x-clip">
       <LoadingScreen />
       <CustomCursor />
 
@@ -133,11 +151,10 @@ export default function Home() {
           className="pointer-events-auto text-xl font-bold tracking-tighter text-left cursor-pointer uppercase"
           aria-label="Scroll to top"
         >
-          <Typewriter 
+          <MaskedText 
             text="Emil Shain" 
-            isUntyping={isFooterVisible || isHero} 
-            speed={0.02}
-            delay={0}
+            className="text-xl font-bold tracking-tighter"
+            reveal={!isFooterVisible && !isHero}
           />
         </button>
       </div>
@@ -149,7 +166,7 @@ export default function Home() {
         } ${isFooterVisible ? "opacity-0 translate-y-[-10px]" : "opacity-100 translate-y-0"}`}
       >
         <div className="text-sm font-bold tracking-tighter flex gap-3 items-center uppercase">
-          <span>Thrissur, IN</span>
+          <span>Kerala, IN</span>
           <span>{currentTime} IST</span>
         </div>
       </div>
@@ -159,22 +176,20 @@ export default function Home() {
         <div className="flex justify-center gap-8 text-sm font-medium pointer-events-auto">
           {[
             { name: "About", href: "#about" },
-            { name: "Achievements", href: "#achievements" },
             { name: "Projects", href: "#projects" },
-            { name: "Skills", href: "#skills" },
             { name: "Contact", href: "#contact" }
           ].map((item, index) => (
             <a
               key={item.name}
               href={item.href}
-              className={`transition-colors duration-500 ease-out hover:opacity-50 font-bold tracking-tighter uppercase ${
+              className={`pointer-events-auto font-bold tracking-tighter uppercase ${
                 isDarkText ? "text-black" : "text-white"
               }`}
             >
-              <Typewriter 
+              <MaskedText 
                 text={item.name} 
-                isUntyping={isFooterVisible} 
-                speed={0.02}
+                className="font-bold tracking-tighter uppercase"
+                reveal={!isFooterVisible}
                 delay={index * 0.05}
               />
             </a>
@@ -191,13 +206,16 @@ export default function Home() {
 
       {/* Sections */}
       <div className="relative z-10" ref={sectionsRef}>
-        <Hero />
-        <HeroTextOnly />
-        <About />
-        <Achievements />
-        <Projects />
-        <Skills />
-        <Footer />
+        {sections.map((SectionComponent, idx) => (
+          <div
+            key={idx}
+            style={{ background: backgrounds[idx] }}
+            className="relative w-full"
+            data-theme={backgrounds[idx] === "#ffffff" || backgrounds[idx] === "#f5f5f5" ? "light" : "dark"}
+          >
+            {SectionComponent}
+          </div>
+        ))}
       </div>
     </main>
   );
