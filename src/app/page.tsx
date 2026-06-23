@@ -16,10 +16,48 @@ import { motion, useScroll, useTransform } from "framer-motion";
 
 
 
+function ParallaxSection({ index, background, theme, children }) {
+  const ref = useRef(null);
+  const { scrollY } = useScroll();
+  const isOdd = index % 2 === 1;
+
+  const y = useTransform(scrollY, (latest) => {
+    if (!ref.current) return 0;
+
+    const element = ref.current;
+    const rect = element.getBoundingClientRect();
+    const viewportHeight = window.innerHeight;
+
+    // Only apply parallax when section is visible
+    if (rect.top > viewportHeight || rect.bottom < 0) return 0;
+
+    // Calculate parallax based on section position in viewport
+    const progress = (viewportHeight - rect.top) / (viewportHeight + rect.height);
+    const speed = isOdd ? 1.2 : 1;
+
+    return (progress * (speed - 1) * 300);
+  });
+
+  return (
+    <motion.div
+      ref={ref}
+      style={{
+        background,
+        y
+      }}
+      className="relative w-full"
+      data-theme={theme}
+    >
+      {children}
+    </motion.div>
+  );
+}
+
 export default function Home() {
   const [isDarkText, setIsDarkText] = useState(false);
   const [isFooterVisible, setIsFooterVisible] = useState(false);
   const [isHero, setIsHero] = useState(true);
+  const [isSecondPage, setIsSecondPage] = useState(false);
   const [currentTime, setCurrentTime] = useState("");
   const sectionsRef = useRef<HTMLDivElement>(null);
   
@@ -57,12 +95,18 @@ export default function Home() {
         if (entry.isIntersecting) {
           const id = entry.target.id;
           setIsHero(id === "hero");
-          
-          // Check if section should have dark text (white/orange background sections)
-          if (id === "about" || id === "projects" || id === "hero-text") {
-            setIsDarkText(true);
+          setIsSecondPage(id === "hero-text");
+
+          // Exception for first two pages
+          if (id === "hero") {
+            setIsDarkText(false); // White text on Hero
+          } else if (id === "hero-text") {
+            setIsDarkText(true); // Black text on HeroTextOnly, white logo via filter
           } else {
-            setIsDarkText(false);
+            // For pages 3+: Black on odd, White on even
+            const sectionIndex = Array.from(sections).indexOf(entry.target);
+            const isOddPage = sectionIndex % 2 === 0; // 0-indexed, so 0=page1(odd), 1=page2(even), 2=page3(odd)
+            setIsDarkText(isOddPage);
           }
         }
       });
@@ -143,6 +187,10 @@ export default function Home() {
             alt="Logo"
             fill
             className="object-contain"
+            style={{
+              filter: isSecondPage ? "grayscale(100%) brightness(2)" : "none",
+              transition: "filter 0.5s ease-in-out"
+            }}
           />
         </motion.div>
         <button
@@ -204,17 +252,17 @@ export default function Home() {
 
 
 
-      {/* Sections */}
+      {/* Sections with Parallax */}
       <div className="relative z-10" ref={sectionsRef}>
         {sections.map((SectionComponent, idx) => (
-          <div
+          <ParallaxSection
             key={idx}
-            style={{ background: backgrounds[idx] }}
-            className="relative w-full"
-            data-theme={backgrounds[idx] === "#ffffff" || backgrounds[idx] === "#f5f5f5" ? "light" : "dark"}
+            index={idx}
+            background={backgrounds[idx]}
+            theme={backgrounds[idx] === "#ffffff" || backgrounds[idx] === "#f5f5f5" ? "light" : "dark"}
           >
             {SectionComponent}
-          </div>
+          </ParallaxSection>
         ))}
       </div>
     </main>
