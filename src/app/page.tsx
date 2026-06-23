@@ -5,7 +5,7 @@ import { LoadingScreen } from "@/components/UI/LoadingScreen";
 import { Hero } from "@/components/Sections/Hero";
 import { HeroTextOnly } from "@/components/Sections/HeroTextOnly";
 import { About } from "@/components/Sections/About";
-import { Achievements } from "@/components/Sections/Achievements";
+import { ELogo3DSection } from "@/components/Sections/ELogo3DSection";
 import { Works } from "@/components/Sections/Works";
 import { Footer } from "@/components/Sections/Footer";
 import { useState, useEffect, useRef } from "react";
@@ -110,16 +110,16 @@ export default function Home() {
     "#000000",      // Hero
     "#f74507",      // HeroTextOnly (Orange Accent)
     "#ffffff",      // About (White)
-    "#000000",      // Achievements (Strip)
+    "#000000",      // ELogo3D (Dark with achievement strips background)
     "#f5f5f5",      // Works (Off-white)
-    "#000000",      // Footer (Dark)
+    "#000000",      // Footer (Dark),
   ];
 
   const sections = [
     <Hero key="hero" />,
     <HeroTextOnly key="hero-text-only" />,
     <About key="about" />,
-    <Achievements key="achievements" />,
+    <ELogo3DSection key="elogo-3d" />,
     <Works key="works" />,
     <Footer key="footer" />,
   ];
