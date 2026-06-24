@@ -16,7 +16,7 @@ import { motion, useScroll, useTransform } from "framer-motion";
 
 
 
-function ParallaxSection({ index, background, theme, children }) {
+function ParallaxSection({ index, background, theme, children }: { index: number; background: string; theme: string; children: React.ReactNode }) {
   const ref = useRef(null);
   const { scrollY } = useScroll();
   const isOdd = index % 2 === 1;
