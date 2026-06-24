@@ -71,25 +71,21 @@ export const ELogo3DSection = () => {
         <AchievementStrip
           achievement={achievements[0]}
           direction="left"
-          duration={25}
           rotation={rotations[0]}
         />
         <AchievementStrip
           achievement={achievements[1]}
           direction="right"
-          duration={30}
           rotation={rotations[1]}
         />
         <AchievementStrip
           achievement={achievements[2]}
           direction="left"
-          duration={28}
           rotation={rotations[2]}
         />
         <AchievementStrip
           achievement={achievements[3]}
           direction="right"
-          duration={32}
           rotation={rotations[3]}
         />
       </div>

@@ -5,9 +5,9 @@ import { useGLTF } from "@react-three/drei";
 import { Suspense, useRef, useState, useEffect } from "react";
 import * as THREE from "three";
 
-function Model({ mouseX, mouseY }) {
+function Model({ mouseX, mouseY }: { mouseX: number; mouseY: number }) {
   const { scene } = useGLTF("/elogo.glb");
-  const groupRef = useRef(null);
+  const groupRef = useRef<THREE.Group>(null);
 
   useFrame(() => {
     if (groupRef.current) {
@@ -28,7 +28,7 @@ function Scene() {
   const [mouseY, setMouseY] = useState(0);
 
   useEffect(() => {
-    const handleMouseMove = (e) => {
+    const handleMouseMove = (e: MouseEvent) => {
       setMouseX((e.clientX / window.innerWidth) * 2 - 1);
       setMouseY((e.clientY / window.innerHeight) * 2 - 1);
     };
