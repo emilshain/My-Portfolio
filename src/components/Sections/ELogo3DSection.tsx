@@ -15,7 +15,15 @@ const achievements = [
   { title: "Fontober 2025", result: "Top 100 National" },
 ];
 
-function AchievementStrip({ achievement, direction = "left", rotation = 0 }) {
+function AchievementStrip({
+  achievement,
+  direction = "left",
+  rotation = 0
+}: {
+  achievement: { title: string; result: string };
+  direction?: "left" | "right";
+  rotation?: number;
+}) {
   const [isHovered, setIsHovered] = useState(false);
   const isRtl = direction === "right";
   const text = `${achievement.title} • ${achievement.result}`;
