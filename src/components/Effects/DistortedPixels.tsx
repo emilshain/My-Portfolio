@@ -16,16 +16,15 @@ const fragmentShader = `
   varying vec2 vUv;
 
   void main() {
-    // Aspect ratio correction (cover)
-    vec2 newUv = (vUv - vec2(0.5)) * resolution.zw + vec2(0.5);
-    
+    vec2 uv = vUv;
+
     // Sample data texture and decode velocity
     vec4 dataSample = texture2D(uDataTexture, vUv);
     vec2 offset = dataSample.rg - 0.5;
-    
+
     // Distort UVs - Reduced strength for a subtle feel
-    vec2 distortedUv = newUv - 0.05 * offset;
-    
+    vec2 distortedUv = uv - 0.05 * offset;
+
     vec4 color = texture2D(uTexture, distortedUv);
     gl_FragColor = vec4(color.rgb, color.a * uOpacity);
   }
@@ -43,7 +42,22 @@ const DistortionPlane = ({ imagePath }: { imagePath: string }) => {
   const meshRef = useRef<THREE.Mesh>(null);
   const texture = useTexture(imagePath);
   const { size, viewport } = useThree();
-  
+
+  // Calculate proper scale to maintain aspect ratio (cover behavior)
+  const imageAspect = (texture.image as any).width / (texture.image as any).height || 1.5;
+  const viewportAspect = viewport.width / viewport.height;
+
+  let scaleX = viewport.width;
+  let scaleY = viewport.height;
+
+  if (viewportAspect > imageAspect) {
+    // Viewport wider than image - fit to width
+    scaleY = viewport.width / imageAspect;
+  } else {
+    // Image wider than viewport - fit to height
+    scaleX = viewport.height * imageAspect;
+  }
+
   // Data texture setup - Using UnsignedByteType for compatibility
   const { data, dataTexture } = useMemo(() => {
     const total = GRID_SIZE * GRID_SIZE;
@@ -86,20 +100,27 @@ const DistortionPlane = ({ imagePath }: { imagePath: string }) => {
 
   useFrame((state) => {
     if (!meshRef.current) return;
-    
+
     const mat = meshRef.current.material as THREE.ShaderMaterial;
     mat.uniforms.time.value = state.clock.elapsedTime;
-    
+
     const image = texture.image as { width?: number; height?: number } | undefined;
-    const imageAspect = image?.width && image?.height ? image.width / image.height : 1.5;
-    let a1, a2;
-    if (size.height / size.width > 1 / imageAspect) {
-      a1 = (size.width / size.height) * imageAspect;
-      a2 = 1;
-    } else {
+    const imageAspect = image?.width && image?.height ? image.width / image.height : 1;
+    const viewportAspect = size.width / size.height;
+
+    let a1 = 1, a2 = 1;
+
+    // Cover behavior - fill the viewport while maintaining aspect ratio
+    if (viewportAspect > imageAspect) {
+      // Viewport is wider than image
       a1 = 1;
-      a2 = (size.height / size.width) / (1 / imageAspect);
+      a2 = viewportAspect / imageAspect;
+    } else {
+      // Image is wider than viewport
+      a1 = imageAspect / viewportAspect;
+      a2 = 1;
     }
+
     mat.uniforms.resolution.value.set(size.width, size.height, a1, a2);
 
     // Update DataTexture
@@ -143,7 +164,7 @@ const DistortionPlane = ({ imagePath }: { imagePath: string }) => {
   });
 
   return (
-    <mesh ref={meshRef} scale={[viewport.width, viewport.height, 1]}>
+    <mesh ref={meshRef} scale={[scaleX, scaleY, 1]}>
       <planeGeometry args={[1, 1, 1, 1]} />
       <shaderMaterial
         vertexShader={vertexShader}
