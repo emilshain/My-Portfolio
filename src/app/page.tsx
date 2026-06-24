@@ -8,7 +8,7 @@ import { About } from "@/components/Sections/About";
 import { ELogo3DSection } from "@/components/Sections/ELogo3DSection";
 import { Works } from "@/components/Sections/Works";
 import { Footer } from "@/components/Sections/Footer";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, RefObject } from "react";
 import Image from "next/image";
 import { Typewriter } from "@/components/UI/Typewriter";
 import { MaskedText } from "@/components/UI/MaskedText";
@@ -17,14 +17,14 @@ import { motion, useScroll, useTransform } from "framer-motion";
 
 
 function ParallaxSection({ index, background, theme, children }: { index: number; background: string; theme: string; children: React.ReactNode }) {
-  const ref = useRef(null);
+  const ref = useRef<HTMLDivElement>(null);
   const { scrollY } = useScroll();
   const isOdd = index % 2 === 1;
 
   const y = useTransform(scrollY, (latest) => {
     if (!ref.current) return 0;
 
-    const element = ref.current;
+    const element = ref.current as HTMLDivElement;
     const rect = element.getBoundingClientRect();
     const viewportHeight = window.innerHeight;
 
