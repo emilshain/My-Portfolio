@@ -6,7 +6,6 @@ import { useState, useEffect, useRef } from "react";
 import { DistortedHeroBackground } from "../Effects/DistortedPixels";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import Splitting from "splitting";
 import "splitting/dist/splitting.css";
 
 if (typeof window !== "undefined") {
@@ -36,12 +35,14 @@ export const Hero = () => {
 
   useEffect(() => {
     if (!titleRef.current) return;
+    const titleEl = titleRef.current;
 
-    // Split text into characters
-    Splitting({ target: titleRef.current });
+    import("splitting").then(({ default: Splitting }) => {
+      // Split text into characters
+      Splitting({ target: titleEl });
 
     // Create colored duplicate for each character
-    const chars = titleRef.current.querySelectorAll(".char");
+    const chars = titleEl.querySelectorAll(".char");
     chars.forEach((char) => {
       const originalChar = char.textContent;
 
@@ -102,6 +103,7 @@ export const Hero = () => {
           ease: "power2.inOut"
         });
       });
+    });
     });
   }, []);
 

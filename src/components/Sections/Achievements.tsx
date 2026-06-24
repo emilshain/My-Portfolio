@@ -8,7 +8,9 @@ const achievements = [
   { title: "CascadeNet", result: "Innovation Award" },
 ];
 
-function AchievementLine({ achievement }) {
+type Achievement = { title: string; result: string };
+
+function AchievementLine({ achievement }: { achievement: Achievement; index: number }) {
   return (
     <div
       className="flex items-center w-full px-4 md:px-8 cursor-pointer group transition-colors duration-300 hover:bg-white/5"
