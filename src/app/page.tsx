@@ -17,33 +17,20 @@ import { motion, useScroll, useTransform } from "framer-motion";
 
 
 function ParallaxSection({ index, background, theme, children }: { index: number; background: string; theme: string; children: React.ReactNode }) {
-  const ref = useRef<HTMLDivElement>(null);
   const { scrollY } = useScroll();
   const isOdd = index % 2 === 1;
+  const speed = isOdd ? 1.1 : 1;
 
   const y = useTransform(scrollY, (latest) => {
-    if (!ref.current) return 0;
-
-    const element = ref.current as HTMLDivElement;
-    const rect = element.getBoundingClientRect();
-    const viewportHeight = window.innerHeight;
-
-    // Only apply parallax when section is visible
-    if (rect.top > viewportHeight || rect.bottom < 0) return 0;
-
-    // Calculate parallax based on section position in viewport
-    const progress = (viewportHeight - rect.top) / (viewportHeight + rect.height);
-    const speed = isOdd ? 1.2 : 1;
-
-    return (progress * (speed - 1) * 300);
+    return latest * (speed - 1) * 0.05;
   });
 
   return (
     <motion.div
-      ref={ref}
       style={{
         background,
-        y
+        y,
+        willChange: "transform"
       }}
       className="relative w-full"
       data-theme={theme}
