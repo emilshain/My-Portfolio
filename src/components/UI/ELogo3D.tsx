@@ -40,7 +40,7 @@ function Scene() {
   return (
     <>
       <ambientLight intensity={0.8} />
-      <directionalLight position={[5, 5, 5]} intensity={1.2} castShadow />
+      <directionalLight position={[5, 5, 5]} intensity={1.2} />
       <directionalLight position={[-5, -5, 3]} intensity={0.4} />
       <Model mouseX={mouseX} mouseY={mouseY} />
     </>
@@ -53,6 +53,7 @@ export const ELogo3D = () => {
       <Canvas
         camera={{ position: [0, 0, 3], fov: 50 }}
         gl={{ antialias: true, alpha: true }}
+        dpr={[1, 1.5]}
         className="w-full h-full"
       >
         <Scene />

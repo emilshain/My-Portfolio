@@ -1,6 +1,6 @@
 "use client";
 
-import { ReactLenis } from "lenis/react";
+import { ReactLenis, useLenis } from "lenis/react";
 import "lenis/dist/lenis.css";
 import { ReactNode, useEffect } from "react";
 import gsap from "gsap";
@@ -8,6 +8,32 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 interface SmoothScrollProps {
   children: ReactNode;
+}
+
+function LenisScrollTriggerBridge() {
+  const lenis = useLenis();
+
+  useEffect(() => {
+    if (!lenis) return;
+
+    lenis.on("scroll", ScrollTrigger.update);
+    if (process.env.NODE_ENV !== "production") {
+      (window as any).__lenis = lenis;
+    }
+
+    const onTick = (time: number) => {
+      lenis.raf(time * 1000);
+    };
+
+    gsap.ticker.add(onTick);
+    gsap.ticker.lagSmoothing(0);
+
+    return () => {
+      gsap.ticker.remove(onTick);
+    };
+  }, [lenis]);
+
+  return null;
 }
 
 export default function SmoothScroll({ children }: SmoothScrollProps) {
@@ -48,17 +74,19 @@ export default function SmoothScroll({ children }: SmoothScrollProps) {
   }, []);
 
   return (
-    <ReactLenis 
-      root 
-      options={{ 
-        lerp: 0.1, 
-        duration: 1.2, 
+    <ReactLenis
+      root
+      options={{
+        lerp: 0.1,
+        duration: 1.2,
         smoothWheel: true,
         wheelMultiplier: 1.5,
         touchMultiplier: 2,
         infinite: false,
+        autoRaf: false,
       }}
     >
+      <LenisScrollTriggerBridge />
       {children}
     </ReactLenis>
   );

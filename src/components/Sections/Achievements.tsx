@@ -1,8 +1,5 @@
 "use client";
 
-import { motion } from "framer-motion";
-import { useState } from "react";
-
 const achievements = [
   { title: "Hackathena 2026", result: "1st Place Winner" },
   { title: "Astrava 2026", result: "National Runner Up" },
@@ -11,34 +8,35 @@ const achievements = [
   { title: "CascadeNet", result: "Innovation Award" },
 ];
 
-function AchievementStrip({ achievement }) {
-  const [isHovered, setIsHovered] = useState(false);
-
+function AchievementLine({ achievement }) {
   return (
     <div
-      className="w-full flex items-center justify-between gap-3 px-3 sm:px-4 md:px-6 py-1 md:py-2 bg-black border-b border-white/5 hover:bg-white/5 transition-colors overflow-hidden"
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
+      className="flex items-center w-full px-4 md:px-8 cursor-pointer group transition-colors duration-300 hover:bg-white/5"
+      style={{ height: `${100 / achievements.length}%` }}
     >
-      <motion.span
-        className="text-xs sm:text-sm md:text-base lg:text-lg font-bold text-white/60 hover:text-white transition-colors uppercase whitespace-nowrap"
-        animate={{ x: isHovered ? -20 : 0 }}
-        transition={{ duration: 0.6, type: "spring", stiffness: 100 }}
-      >
-        {achievement.title}
-      </motion.span>
-      <span className="bg-accent text-white text-[8px] sm:text-[9px] md:text-[10px] px-1.5 sm:px-2 md:px-3 py-0.5 md:py-1 font-bold uppercase tracking-wider flex-shrink-0">
-        {achievement.result}
-      </span>
+      <div className="flex items-baseline gap-3 whitespace-nowrap transition-transform duration-300 ease-out group-hover:translate-x-5">
+        <span
+          className="font-bold text-white/60 group-hover:text-white transition-colors uppercase"
+          style={{ fontSize: "clamp(2rem, 6vw, 8vw)" }}
+        >
+          {achievement.title}
+        </span>
+        <span
+          className="bg-accent text-white px-3 md:px-4 py-1 md:py-2 font-bold uppercase tracking-wider flex-shrink-0"
+          style={{ fontSize: "clamp(0.5rem, 1.5vw, 2rem)" }}
+        >
+          {achievement.result}
+        </span>
+      </div>
     </div>
   );
 }
 
 export const Achievements = () => {
   return (
-    <section id="achievements" className="w-full bg-black border-y border-white/5">
+    <section id="achievements" className="w-full bg-black border-y border-white/5" style={{ height: "100vh" }}>
       {achievements.map((achievement, idx) => (
-        <AchievementStrip key={idx} achievement={achievement} />
+        <AchievementLine key={idx} achievement={achievement} index={idx} />
       ))}
     </section>
   );
