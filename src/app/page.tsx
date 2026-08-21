@@ -16,27 +16,92 @@ import { motion, useScroll, useTransform } from "framer-motion";
 
 
 
-function ParallaxSection({ index, background, theme, children }: { index: number; background: string; theme: string; children: React.ReactNode }) {
-  const { scrollY } = useScroll();
-  const isOdd = index % 2 === 1;
-  const speed = isOdd ? 1.1 : 1;
+function ParallaxSection({ index, background, theme, children, pin }: { index: number; background: string; theme: string; children: React.ReactNode; pin?: boolean }) {
+  const isOdd = pin ?? index % 2 === 1;
+  const spacerRef = useRef<HTMLDivElement>(null);
+  const contentRef = useRef<HTMLDivElement>(null);
+  const [active, setActive] = useState(false);
+  const [contentHeight, setContentHeight] = useState(0);
+  const [viewportHeight, setViewportHeight] = useState(0);
 
-  const y = useTransform(scrollY, (latest) => {
-    return latest * (speed - 1) * 0.05;
-  });
+  useEffect(() => {
+    if (!isOdd || !spacerRef.current) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => setActive(entry.isIntersecting),
+      { threshold: 0 }
+    );
+    observer.observe(spacerRef.current);
+    return () => observer.disconnect();
+  }, [isOdd]);
+
+  useEffect(() => {
+    if (!isOdd) return;
+    setViewportHeight(window.innerHeight);
+    const handleResize = () => setViewportHeight(window.innerHeight);
+    window.addEventListener("resize", handleResize);
+
+    let resizeObserver: ResizeObserver | undefined;
+    if (contentRef.current) {
+      resizeObserver = new ResizeObserver(([entry]) => {
+        setContentHeight(entry.target.scrollHeight);
+      });
+      resizeObserver.observe(contentRef.current);
+    }
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+      resizeObserver?.disconnect();
+    };
+  }, [isOdd]);
+
+  const extra = Math.max(0, contentHeight - viewportHeight);
+
+  const { scrollYProgress } = useScroll(
+    isOdd
+      ? { target: spacerRef as RefObject<HTMLDivElement>, offset: ["start start", "end start"] }
+      : {}
+  );
+  const y = useTransform(scrollYProgress, [0, 1], [0, -extra]);
+
+  if (!isOdd) {
+    return (
+      <div
+        style={{
+          background,
+          position: "relative",
+          width: "100%",
+          zIndex: 10
+        }}
+        data-theme={theme}
+      >
+        {children}
+      </div>
+    );
+  }
 
   return (
-    <motion.div
-      style={{
-        background,
-        y,
-        willChange: "transform"
-      }}
-      className="relative w-full"
-      data-theme={theme}
-    >
-      {children}
-    </motion.div>
+    <>
+      <div ref={spacerRef} style={{ width: "100%", height: `calc(100vh + ${extra}px)` }} />
+      <div
+        style={{
+          background,
+          position: "fixed",
+          top: 0,
+          left: 0,
+          right: 0,
+          height: "100vh",
+          zIndex: 5,
+          opacity: active ? 1 : 0,
+          pointerEvents: active ? "auto" : "none"
+        }}
+        className="overflow-hidden"
+        data-theme={theme}
+      >
+        <motion.div ref={contentRef} style={{ y }}>
+          {children}
+        </motion.div>
+      </div>
+    </>
   );
 }
 
@@ -247,6 +312,7 @@ export default function Home() {
             index={idx}
             background={backgrounds[idx]}
             theme={backgrounds[idx] === "#ffffff" || backgrounds[idx] === "#f5f5f5" ? "light" : "dark"}
+            pin={idx === 3 ? false : undefined}
           >
             {SectionComponent}
           </ParallaxSection>

@@ -23,6 +23,7 @@ export const ELogo3DSection = () => {
   const sectionRef = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const lineRefs = useRef<(HTMLSpanElement | null)[]>([]);
+  const [scrollDistance, setScrollDistance] = useState(0);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -34,18 +35,24 @@ export const ELogo3DSection = () => {
 
     const getLineMaxScroll = (line: HTMLSpanElement) => Math.max(0, line.scrollWidth - window.innerWidth);
     const getOverallMaxScroll = () => Math.max(...lines.map(getLineMaxScroll));
+    // The sticky "hold" before the next section is allowed to cover this one must
+    // stay comfortably long even when the lines barely overflow (e.g. wide desktop
+    // viewports), otherwise the section unsticks almost immediately and looks like
+    // it scrolled away instead of staying frozen.
+    const getHoldDistance = () => Math.max(getOverallMaxScroll(), window.innerHeight);
 
-    // Each line travels its own distance but all reach the end together
+    setScrollDistance(getHoldDistance());
+
+    // Section sticks (via CSS position:sticky on the section itself) while this
+    // scrubs the lines; no GSAP pin needed since sticky already freezes it in
+    // place, letting the next section scroll up and cover it once distance is used.
     const tl = gsap.timeline({
       scrollTrigger: {
-        id: "elogo3d-pin",
+        id: "elogo3d-scrub",
         trigger: section,
         start: "top top",
         end: () => "+=" + getOverallMaxScroll(),
         scrub: true,
-        pin: true,
-        pinType: "transform",
-        anticipatePin: 1,
         invalidateOnRefresh: true
       }
     });
@@ -53,6 +60,12 @@ export const ELogo3DSection = () => {
     lines.forEach((line) => {
       tl.to(line, { x: () => -getLineMaxScroll(line), ease: "none" }, 0);
     });
+
+    const handleResize = () => {
+      setScrollDistance(getHoldDistance());
+      ScrollTrigger.refresh();
+    };
+    window.addEventListener("resize", handleResize);
 
     const handleMouseMove = (e: MouseEvent) => {
       const rect = section.getBoundingClientRect();
@@ -69,6 +82,7 @@ export const ELogo3DSection = () => {
     section.addEventListener("mousemove", handleMouseMove);
 
     return () => {
+      window.removeEventListener("resize", handleResize);
       section.removeEventListener("mousemove", handleMouseMove);
       tl.scrollTrigger?.kill();
       tl.kill();
@@ -76,9 +90,10 @@ export const ELogo3DSection = () => {
   }, []);
 
   return (
+    <div className="relative w-full" style={{ height: `calc(100vh + ${scrollDistance}px)` }}>
     <section
       ref={sectionRef}
-      className="relative w-full h-screen bg-black overflow-hidden"
+      className="sticky top-0 w-full h-screen bg-black overflow-hidden"
     >
       {/* Pinned horizontal scroll lines, each at its own speed */}
       <div ref={containerRef} className="h-full flex flex-col justify-center">
@@ -102,5 +117,6 @@ export const ELogo3DSection = () => {
         </div>
       </div>
     </section>
+    </div>
   );
 };
