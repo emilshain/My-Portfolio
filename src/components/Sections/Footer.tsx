@@ -38,10 +38,10 @@ export const Footer = () => {
           <div className="text-white/40 text-sm mb-6 h-5">
             <MaskedText text="Contact" reveal={isInView} delay={0.05} className="text-white/40 text-sm" />
           </div>
-          <a href="mailto:emilshain.official@gmail.com" className="text-3xl md:text-5xl lg:text-4xl xl:text-5xl font-medium tracking-tight hover:text-accent transition-colors duration-300">
+          <a href="mailto:emilshain.official@gmail.com" className="contact-fs font-medium tracking-tight hover:text-accent transition-colors duration-300">
             <MaskedText text="emilshain.official@gmail.com" reveal={isInView} className="inline-flex" delay={0.1} />
           </a>
-          <a href="tel:+919633285499" className="text-3xl md:text-5xl lg:text-4xl xl:text-5xl font-medium tracking-tight mt-4 hover:text-accent transition-colors duration-300">
+          <a href="tel:+919633285499" className="contact-fs font-medium tracking-tight mt-4 hover:text-accent transition-colors duration-300">
             <MaskedText text="+91 96332 85499" reveal={isInView} className="inline-flex" delay={0.2} />
           </a>
         </div>

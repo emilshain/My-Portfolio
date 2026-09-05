@@ -115,6 +115,25 @@ body {
   @apply bg-white/20 rounded-full hover:bg-white/30 transition-colors;
 }
 
+/* Fluid contact text. The email address is a single unbreakable string whose
+   width scales with font-size, so instead of fixed breakpoint sizes it scales
+   down to always fit its footer column (full width < md, then the 1/3 column
+   on lg+) and never clips. Divisors leave ~3% slack against the measured
+   string width (~13.6em for the email). */
+.contact-fs {
+  font-size: min(1.875rem, calc((100vw - 3rem) / 14));
+}
+@media (min-width: 768px) {
+  .contact-fs {
+    font-size: min(3rem, calc((100vw - 8rem) / 14));
+  }
+}
+@media (min-width: 1024px) {
+  .contact-fs {
+    font-size: min(3rem, calc((100vw - 8rem) / 42));
+  }
+}
+
 /* Masked Text Hover Effect */
 .content-span {
   opacity: 0;

@@ -140,9 +140,10 @@ export const Works = () => {
           </h2>
         </div>
 
-        {/* Categories Map */}
+        {/* Categories Map - only render rows for categories that actually have works,
+            so empty categories don't leave dead vertical space before the CTA */}
         <div className="space-y-24">
-          {categories.map((cat) => (
+          {categories.filter((cat) => (workData[cat.id] ?? []).length > 0).map((cat) => (
             <div key={cat.id} className="w-full px-4">
               {/* Row for this category - height derives from the displayed works */}
               <WorkRow paths={workData[cat.id] ?? []} limit={cat.limit} fallbackHeight={cat.fallbackHeight} />
