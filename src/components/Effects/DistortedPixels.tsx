@@ -1,9 +1,9 @@
 "use client";
 
 import * as THREE from "three";
-import React, { useRef, useMemo, useEffect } from "react";
+import React, { useRef, useMemo, useEffect, useState } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import { useTexture } from "@react-three/drei";
+import { useVideoTexture } from "@react-three/drei";
 
 const GRID_SIZE = 16; // Decreased for a more 'pixelated' distortion feel
 
@@ -38,13 +38,37 @@ const vertexShader = `
   }
 `;
 
-const DistortionPlane = ({ imagePath }: { imagePath: string }) => {
+const DistortionPlane = ({ imagePath, progressRef }: { imagePath: string; progressRef: { current: number } }) => {
   const meshRef = useRef<THREE.Mesh>(null);
-  const texture = useTexture(imagePath);
+  const texture = useVideoTexture(imagePath, { loop: false, muted: true, start: false });
+
+  // Re-render once the video metadata is loaded so the cover-fit scale uses the real aspect ratio
+  const [, setVideoReady] = useState(false);
+  useEffect(() => {
+    const video = texture.image as HTMLVideoElement;
+    const onLoaded = () => {
+      setVideoReady(true);
+      // Pin a decoded first frame so the hero isn't black before the first scroll
+      video.pause();
+      video.currentTime = 0.001;
+    };
+    if (video.readyState >= HTMLMediaElement.HAVE_METADATA) {
+      onLoaded();
+      return;
+    }
+    video.addEventListener("loadedmetadata", onLoaded);
+    return () => video.removeEventListener("loadedmetadata", onLoaded);
+  }, [texture]);
+
+  // Video aspect ratio (0 until metadata loads) with a sensible fallback
+  const videoAspect = () => {
+    const video = texture.image as HTMLVideoElement;
+    return video?.videoWidth && video?.videoHeight ? video.videoWidth / video.videoHeight : 1.5;
+  };
   const { size, viewport } = useThree();
 
   // Calculate proper scale to maintain aspect ratio (cover behavior)
-  const imageAspect = (texture.image as any).width / (texture.image as any).height || 1.5;
+  const imageAspect = videoAspect();
   const viewportAspect = viewport.width / viewport.height;
 
   let scaleX = viewport.width;
@@ -104,8 +128,8 @@ const DistortionPlane = ({ imagePath }: { imagePath: string }) => {
     const mat = meshRef.current.material as THREE.ShaderMaterial;
     mat.uniforms.time.value = state.clock.elapsedTime;
 
-    const image = texture.image as { width?: number; height?: number } | undefined;
-    const imageAspect = image?.width && image?.height ? image.width / image.height : 1;
+    const video = texture.image as HTMLVideoElement;
+    const imageAspect = video?.videoWidth && video?.videoHeight ? video.videoWidth / video.videoHeight : 1;
     const viewportAspect = size.width / size.height;
 
     let a1 = 1, a2 = 1;
@@ -161,6 +185,16 @@ const DistortionPlane = ({ imagePath }: { imagePath: string }) => {
     mouse.current.vX *= 0.8;
     mouse.current.vY *= 0.8;
     dataTexture.needsUpdate = true;
+
+    // Scrub the video according to scroll progress
+    if (video && video.readyState >= HTMLMediaElement.HAVE_CURRENT_DATA && Number.isFinite(video.duration) && video.duration > 0) {
+      if (!video.paused) video.pause();
+      const target = progressRef.current * video.duration;
+      if (Math.abs(video.currentTime - target) > 0.005) {
+        video.currentTime = target;
+        texture.needsUpdate = true;
+      }
+    }
   });
 
   return (
@@ -176,7 +210,7 @@ const DistortionPlane = ({ imagePath }: { imagePath: string }) => {
   );
 };
 
-export const DistortedHeroBackground = ({ imagePath }: { imagePath: string }) => {
+export const DistortedHeroBackground = ({ imagePath, progressRef }: { imagePath: string; progressRef: { current: number } }) => {
   return (
     <div className="absolute inset-0 w-full h-full overflow-hidden">
       <Canvas
@@ -188,7 +222,7 @@ export const DistortedHeroBackground = ({ imagePath }: { imagePath: string }) =>
         dpr={[1, 2]}
       >
         <React.Suspense fallback={null}>
-          <DistortionPlane imagePath={imagePath} />
+          <DistortionPlane imagePath={imagePath} progressRef={progressRef} />
         </React.Suspense>
       </Canvas>
 

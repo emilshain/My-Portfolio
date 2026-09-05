@@ -27,7 +27,6 @@ export const Footer = () => {
 
   return (
     <footer
-      id="contact"
       ref={footerRef}
       className="relative flex h-screen w-full flex-col justify-between px-6 pt-0 pb-0 md:px-16 overflow-hidden"
     >
@@ -37,13 +36,13 @@ export const Footer = () => {
         {/* Left: Contact */}
         <div className="flex flex-col mb-16 lg:mb-0 lg:w-1/3">
           <div className="text-white/40 text-sm mb-6 h-5">
-            <MaskedText text="Contact" delay={0.05} className="text-white/40 text-sm" />
+            <MaskedText text="Contact" reveal={isInView} delay={0.05} className="text-white/40 text-sm" />
           </div>
           <a href="mailto:emilshain.official@gmail.com" className="text-3xl md:text-5xl lg:text-4xl xl:text-5xl font-medium tracking-tight hover:text-accent transition-colors duration-300">
-            <MaskedText text="emilshain.official@gmail.com" className="inline-flex" delay={0.1} />
+            <MaskedText text="emilshain.official@gmail.com" reveal={isInView} className="inline-flex" delay={0.1} />
           </a>
           <a href="tel:+919633285499" className="text-3xl md:text-5xl lg:text-4xl xl:text-5xl font-medium tracking-tight mt-4 hover:text-accent transition-colors duration-300">
-            <MaskedText text="+91 96332 85499" className="inline-flex" delay={0.2} />
+            <MaskedText text="+91 96332 85499" reveal={isInView} className="inline-flex" delay={0.2} />
           </a>
         </div>
 
@@ -67,20 +66,32 @@ export const Footer = () => {
               <MaskedText text="Pages" reveal={isInView} delay={0.1} className="text-white/40 text-sm" />
             </div>
             <div className="flex flex-col gap-3">
-              {['About', 'Projects', 'Contact'].map((item, index) => (
-                <a 
-                  href={`#${item.toLowerCase()}`} 
-                  key={item} 
-                  className="text-lg text-white/80"
-                >
-                  <MaskedText 
-                    text={item} 
-                    className="text-lg text-white/80 hover:text-white"
-                    reveal={isInView}
-                    delay={0.2 + index * 0.05}
-                  />
-                </a>
-              ))}
+              {['About', 'Projects', 'Contact'].map((item, index) => {
+                const href = `#${item.toLowerCase()}`;
+                return (
+                  <a 
+                    href={href} 
+                    key={item} 
+                    className="text-lg text-white/80"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      if (href === '#contact') {
+                        window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+                      } else {
+                        const target = document.querySelector(href);
+                        if (target) target.scrollIntoView({ behavior: 'smooth' });
+                      }
+                    }}
+                  >
+                    <MaskedText 
+                      text={item} 
+                      className="text-lg text-white/80 hover:text-white"
+                      reveal={isInView}
+                      delay={0.2 + index * 0.05}
+                    />
+                  </a>
+                );
+              })}
             </div>
           </div>
           
@@ -99,6 +110,7 @@ export const Footer = () => {
                   <MaskedText 
                     text={link.name} 
                     className="text-lg text-white/80 hover:text-white"
+                    reveal={isInView}
                     delay={index * 0.05}
                   />
                 </a>

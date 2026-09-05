@@ -16,7 +16,7 @@ import { motion, useScroll, useTransform } from "framer-motion";
 
 
 
-function ParallaxSection({ index, background, theme, children, pin }: { index: number; background: string; theme: string; children: React.ReactNode; pin?: boolean }) {
+function ParallaxSection({ index, background, theme, children, pin, id }: { index: number; background: string; theme: string; children: React.ReactNode; pin?: boolean; id?: string }) {
   const isOdd = pin ?? index % 2 === 1;
   const spacerRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
@@ -66,6 +66,8 @@ function ParallaxSection({ index, background, theme, children, pin }: { index: n
   if (!isOdd) {
     return (
       <div
+        id={id}
+        className="parallax-section"
         style={{
           background,
           position: "relative",
@@ -81,7 +83,7 @@ function ParallaxSection({ index, background, theme, children, pin }: { index: n
 
   return (
     <>
-      <div ref={spacerRef} style={{ width: "100%", height: `calc(100vh + ${extra}px)` }} />
+      <div id={id} className="parallax-section" ref={spacerRef} style={{ width: "100%", height: `calc(100vh + ${extra}px)` }} />
       <div
         style={{
           background,
@@ -134,7 +136,7 @@ export default function Home() {
   };
 
   useEffect(() => {
-    const sections = document.querySelectorAll("section, footer");
+    const sections = document.querySelectorAll(".parallax-section");
     
     const observerOptions = {
       root: null,
@@ -176,7 +178,7 @@ export default function Home() {
       { root: null, threshold: 0.5 }
     );
 
-    const footerNameElement = document.querySelector("#contact h2");
+    const footerNameElement = document.querySelector("#contact");
     if (footerNameElement) footerObserver.observe(footerNameElement);
 
     // Live Indian Time Update
@@ -282,6 +284,15 @@ export default function Home() {
             <a
               key={item.name}
               href={item.href}
+              onClick={(e) => {
+                e.preventDefault();
+                if (item.href === '#contact') {
+                  window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+                } else {
+                  const target = document.querySelector(item.href);
+                  if (target) target.scrollIntoView({ behavior: 'smooth' });
+                }
+              }}
               className={`pointer-events-auto font-bold tracking-tighter uppercase ${
                 isDarkText ? "text-black" : "text-white"
               }`}
@@ -306,17 +317,21 @@ export default function Home() {
 
       {/* Sections with Parallax */}
       <div className="relative z-10" ref={sectionsRef}>
-        {sections.map((SectionComponent, idx) => (
-          <ParallaxSection
-            key={idx}
-            index={idx}
-            background={backgrounds[idx]}
-            theme={backgrounds[idx] === "#ffffff" || backgrounds[idx] === "#f5f5f5" ? "light" : "dark"}
-            pin={idx === 3 ? false : undefined}
-          >
-            {SectionComponent}
-          </ParallaxSection>
-        ))}
+        {sections.map((SectionComponent, idx) => {
+          const sectionIds = ["hero", "hero-text", "about", "elogo", "projects", "contact"];
+          return (
+            <ParallaxSection
+              key={idx}
+              index={idx}
+              id={sectionIds[idx]}
+              background={backgrounds[idx]}
+              theme={backgrounds[idx] === "#ffffff" || backgrounds[idx] === "#f5f5f5" ? "light" : "dark"}
+              pin={idx === 3 ? false : undefined}
+            >
+              {SectionComponent}
+            </ParallaxSection>
+          );
+        })}
       </div>
     </main>
   );

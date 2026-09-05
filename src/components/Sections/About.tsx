@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 
 export const About = () => {
   return (
-    <section id="about" className="relative min-h-screen w-full flex flex-col justify-center py-24 md:py-32 px-6 md:px-24">
+    <section className="relative min-h-screen w-full flex flex-col justify-center py-24 md:py-32 px-6 md:px-24">
       <div className="max-w-[1600px] w-full mx-auto space-y-24 md:space-y-32">
         
 

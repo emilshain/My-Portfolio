@@ -24,6 +24,7 @@ export const Hero = () => {
   const heroRef = useRef<HTMLDivElement>(null);
   const titleRef = useRef<HTMLHeadingElement>(null);
   const bgRef = useRef<HTMLDivElement>(null);
+  const videoProgressRef = useRef(0);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -31,6 +32,24 @@ export const Hero = () => {
     }, 3000);
 
     return () => clearInterval(timer);
+  }, []);
+
+  // Scrub the hero video playback according to scroll position
+  useEffect(() => {
+    if (!heroRef.current || typeof window === "undefined") return;
+
+    const trigger = ScrollTrigger.create({
+      trigger: heroRef.current,
+      start: "top top",
+      end: "bottom top",
+      onUpdate: (self) => {
+        videoProgressRef.current = self.progress;
+      },
+    });
+
+    return () => {
+      trigger.kill();
+    };
   }, []);
 
   useEffect(() => {
@@ -108,13 +127,13 @@ export const Hero = () => {
   }, []);
 
   return (
-    <section id="hero" ref={heroRef} className="relative h-screen w-full flex items-center justify-center overflow-hidden">
+    <section ref={heroRef} className="relative h-screen w-full flex items-center justify-center overflow-hidden">
       <div
         ref={bgRef}
         className="absolute inset-0 z-0"
       >
         <div className="absolute inset-0">
-          <DistortedHeroBackground imagePath="/hero-background.png" />
+          <DistortedHeroBackground imagePath="/hero-videobg.mp4" progressRef={videoProgressRef} />
         </div>
       </div>
 
