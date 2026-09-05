@@ -77,7 +77,11 @@ body {
 @layer base {
   * {
     @apply border-white/10;
-    cursor: none !important;
+  }
+  @media (min-width: 768px) {
+    * {
+      cursor: none !important;
+    }
   }
   body {
     @apply bg-[var(--background)] text-[var(--foreground)] selection:bg-accent/30 selection:text-white;

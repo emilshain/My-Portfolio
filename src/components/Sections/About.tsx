@@ -4,8 +4,8 @@ import { motion } from "framer-motion";
 
 export const About = () => {
   return (
-    <section className="relative min-h-screen w-full flex flex-col justify-center py-24 md:py-32 px-6 md:px-24">
-      <div className="max-w-[1600px] w-full mx-auto space-y-24 md:space-y-32">
+    <section id="about" className="relative min-h-screen w-full flex flex-col justify-center py-20 md:py-32 px-6 md:px-24">
+      <div className="max-w-[1600px] w-full mx-auto space-y-16 md:space-y-32">
         
 
         {/* Line 1: Who you are */}
@@ -15,7 +15,7 @@ export const About = () => {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
-            className="text-[11vw] md:text-[6.5vw] font-bold tracking-tighter leading-[0.85] text-black uppercase"
+            className="text-[9.5vw] md:text-[6.5vw] font-bold tracking-tighter leading-[0.85] text-black uppercase"
           >
             I&apos;m Emil — <br className="hidden md:block" />
             a designer and <br className="hidden md:block" />

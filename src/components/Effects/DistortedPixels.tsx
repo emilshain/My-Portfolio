@@ -13,7 +13,27 @@ const fragmentShader = `
   uniform sampler2D uDataTexture;
   uniform vec4 resolution;
   uniform float uOpacity;
+  uniform float uGrainStrength;
   varying vec2 vUv;
+
+  // Dynamic, refined & cinematic high-frequency sine wave function for procedural film grain
+  float proceduralGrain(vec2 uv, float t) {
+    // Quantize time to 18 FPS for smooth, cinematic film grain motion rate (not too fast/frantic)
+    float timeStep = floor(t * 18.0);
+    float frameSeed1 = fract(sin(timeStep * 123.4567) * 43758.5453);
+    float frameSeed2 = fract(cos(timeStep * 987.6543) * 23421.6312);
+
+    // Refined grain scale (1.6) for natural specks (not too large/chunky)
+    float grainScale = 1.6;
+    vec2 p = floor((uv * resolution.xy) / grainScale) + vec2(frameSeed1 * 271.0, frameSeed2 * 417.0);
+
+    // Multi-harmonic high-frequency spatial sine wave hashes
+    float n1 = fract(sin(dot(p, vec2(12.9898, 78.233))) * 43758.5453);
+    float n2 = fract(sin(dot(p, vec2(63.7264, 10.8732))) * 23421.6312);
+
+    float grain = fract(n1 + n2);
+    return grain;
+  }
 
   void main() {
     vec2 uv = vUv;
@@ -26,7 +46,19 @@ const fragmentShader = `
     vec2 distortedUv = uv - 0.05 * offset;
 
     vec4 color = texture2D(uTexture, distortedUv);
-    gl_FragColor = vec4(color.rgb, color.a * uOpacity);
+
+    // Calculate procedural grain using high-frequency sine wave function
+    float grain = proceduralGrain(uv, time);
+
+    // Gritty contrast transformation
+    float centered = grain - 0.5;
+    float grittyNoise = sign(centered) * pow(abs(centered), 0.85);
+
+    // Apply gritty & noisy texture to video colors
+    vec3 grittyColor = color.rgb + grittyNoise * uGrainStrength;
+    grittyColor = clamp(grittyColor, 0.0, 1.0);
+
+    gl_FragColor = vec4(grittyColor, color.a * uOpacity);
   }
 `;
 
@@ -119,6 +151,7 @@ const DistortionPlane = ({ imagePath, progressRef }: { imagePath: string; progre
     uTexture: { value: texture },
     uDataTexture: { value: dataTexture },
     uOpacity: { value: 1.0 }, // Full opacity for maximum clarity
+    uGrainStrength: { value: 0.30 }, // Balanced gritty and noisy procedural grain
     resolution: { value: new THREE.Vector4() }
   }), [texture, dataTexture]);
 
@@ -229,3 +262,83 @@ export const DistortedHeroBackground = ({ imagePath, progressRef }: { imagePath:
     </div>
   );
 };
+
+export const ProceduralGrainCanvas = ({ grainStrength = 0.30 }: { grainStrength?: number }) => {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+
+    let animFrameId: number;
+    let time = 0;
+
+    const resize = () => {
+      canvas.width = Math.ceil(window.innerWidth / 2);
+      canvas.height = Math.ceil(window.innerHeight / 2);
+    };
+    resize();
+    window.addEventListener("resize", resize);
+
+    const render = () => {
+      time += 0.016;
+      const width = canvas.width;
+      const height = canvas.height;
+      if (width === 0 || height === 0) return;
+      const imgData = ctx.createImageData(width, height);
+      const data = imgData.data;
+
+      // Quantize time to 18 FPS for natural cinematic film grain motion rate
+      const timeStep = Math.floor(time * 18.0);
+      const grainScale = 1.6;
+
+      const frameSeed1 = Math.abs(Math.sin(timeStep * 123.4567) * 43758.5453) % 1;
+      const frameSeed2 = Math.abs(Math.cos(timeStep * 987.6543) * 23421.6312) % 1;
+      const offsetX = frameSeed1 * 271.0;
+      const offsetY = frameSeed2 * 417.0;
+
+      // High-frequency sine wave function loop
+      for (let y = 0; y < height; y++) {
+        for (let x = 0; x < width; x++) {
+          const idx = (y * width + x) * 4;
+          const px = Math.floor(x / grainScale) + offsetX;
+          const py = Math.floor(y / grainScale) + offsetY;
+
+          const n1 = Math.abs(Math.sin(px * 12.9898 + py * 78.233) * 43758.5453) % 1;
+          const n2 = Math.abs(Math.sin(px * 63.7264 + py * 10.8732) * 23421.6312) % 1;
+          let grain = (n1 + n2) % 1;
+
+          const centered = grain - 0.5;
+          const grittyNoise = Math.sign(centered) * Math.pow(Math.abs(centered), 0.85);
+
+          const noiseVal = grittyNoise * 255 * grainStrength;
+
+          data[idx] = Math.min(255, Math.max(0, 128 + noiseVal));
+          data[idx + 1] = Math.min(255, Math.max(0, 128 + noiseVal));
+          data[idx + 2] = Math.min(255, Math.max(0, 128 + noiseVal));
+          data[idx + 3] = 65; // Balanced overlay opacity
+        }
+      }
+
+      ctx.putImageData(imgData, 0, 0);
+      animFrameId = requestAnimationFrame(render);
+    };
+
+    render();
+
+    return () => {
+      window.removeEventListener("resize", resize);
+      cancelAnimationFrame(animFrameId);
+    };
+  }, [grainStrength]);
+
+  return (
+    <canvas
+      ref={canvasRef}
+      className="absolute inset-0 w-full h-full pointer-events-none mix-blend-overlay opacity-80 z-10"
+    />
+  );
+};
+

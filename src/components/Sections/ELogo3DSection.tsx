@@ -24,6 +24,16 @@ export const ELogo3DSection = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   const lineRefs = useRef<(HTMLSpanElement | null)[]>([]);
   const [scrollDistance, setScrollDistance] = useState(0);
+  const [isDesktop, setIsDesktop] = useState(false);
+
+  useEffect(() => {
+    const checkDesktop = () => {
+      setIsDesktop(window.innerWidth >= 768);
+    };
+    checkDesktop();
+    window.addEventListener("resize", checkDesktop);
+    return () => window.removeEventListener("resize", checkDesktop);
+  }, []);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -35,17 +45,10 @@ export const ELogo3DSection = () => {
 
     const getLineMaxScroll = (line: HTMLSpanElement) => Math.max(0, line.scrollWidth - window.innerWidth);
     const getOverallMaxScroll = () => Math.max(...lines.map(getLineMaxScroll));
-    // The sticky "hold" before the next section is allowed to cover this one must
-    // stay comfortably long even when the lines barely overflow (e.g. wide desktop
-    // viewports), otherwise the section unsticks almost immediately and looks like
-    // it scrolled away instead of staying frozen.
     const getHoldDistance = () => Math.max(getOverallMaxScroll(), window.innerHeight);
 
     setScrollDistance(getHoldDistance());
 
-    // Section sticks (via CSS position:sticky on the section itself) while this
-    // scrubs the lines; no GSAP pin needed since sticky already freezes it in
-    // place, letting the next section scroll up and cover it once distance is used.
     const tl = gsap.timeline({
       scrollTrigger: {
         id: "elogo3d-scrub",
@@ -67,56 +70,62 @@ export const ELogo3DSection = () => {
     };
     window.addEventListener("resize", handleResize);
 
-    const handleMouseMove = (e: MouseEvent) => {
-      const rect = section.getBoundingClientRect();
-      const x = e.clientX - rect.left;
-      const y = e.clientY - rect.top;
+    let handleMouseMove: ((e: MouseEvent) => void) | null = null;
+    if (isDesktop) {
+      handleMouseMove = (e: MouseEvent) => {
+        const rect = section.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
 
-      section.dispatchEvent(
-        new CustomEvent("mousemove3d", {
-          detail: { x, y, clientX: e.clientX, clientY: e.clientY },
-        })
-      );
-    };
-
-    section.addEventListener("mousemove", handleMouseMove);
+        section.dispatchEvent(
+          new CustomEvent("mousemove3d", {
+            detail: { x, y, clientX: e.clientX, clientY: e.clientY },
+          })
+        );
+      };
+      section.addEventListener("mousemove", handleMouseMove);
+    }
 
     return () => {
       window.removeEventListener("resize", handleResize);
-      section.removeEventListener("mousemove", handleMouseMove);
+      if (handleMouseMove) {
+        section.removeEventListener("mousemove", handleMouseMove);
+      }
       tl.scrollTrigger?.kill();
       tl.kill();
     };
-  }, []);
+  }, [isDesktop]);
 
   return (
     <div className="relative w-full" style={{ height: `calc(100vh + ${scrollDistance}px)` }}>
-    <section
-      ref={sectionRef}
-      className="sticky top-0 w-full h-screen bg-black overflow-hidden"
-    >
-      {/* Pinned horizontal scroll lines, each at its own speed */}
-      <div ref={containerRef} className="h-full flex flex-col justify-center">
-        {achievements.map((a, i) => (
-          <span
-            key={i}
-            ref={(el) => { lineRefs.current[i] = el; }}
-            className="text-[10vw] sm:text-[12vw] md:text-[14vw] font-bold tracking-tighter text-white leading-[0.9] uppercase whitespace-nowrap"
-            style={{ willChange: "transform" }}
-          >
-            {a.title}
-            {a.tags && a.tags.length > 0 ? ` • ${a.tags.join(" • ")}` : ""}
-          </span>
-        ))}
-      </div>
-
-      {/* 3D Model in foreground */}
-      <div className="absolute inset-0 z-20 flex items-center justify-center pointer-events-none" style={{ perspective: "1000px" }}>
-        <div className="w-[80vw] h-[80vh] sm:w-[100vw] sm:h-[100vh] md:w-[120vw] md:h-[120vh] flex items-center justify-center pointer-events-auto">
-          <ELogo3D />
+      <section
+        ref={sectionRef}
+        className="sticky top-0 w-full h-screen bg-black overflow-hidden"
+      >
+        {/* Pinned horizontal scroll lines */}
+        <div ref={containerRef} className="h-full flex flex-col justify-center">
+          {achievements.map((a, i) => (
+            <span
+              key={i}
+              ref={(el) => { lineRefs.current[i] = el; }}
+              className="text-[10vw] sm:text-[12vw] md:text-[14vw] font-bold tracking-tighter text-white leading-[0.9] uppercase whitespace-nowrap"
+              style={{ willChange: "transform" }}
+            >
+              {a.title}
+              {a.tags && a.tags.length > 0 ? ` • ${a.tags.join(" • ")}` : ""}
+            </span>
+          ))}
         </div>
-      </div>
-    </section>
+
+        {/* 3D Model in foreground - Desktop only */}
+        {isDesktop && (
+          <div className="absolute inset-0 z-20 flex items-center justify-center pointer-events-none" style={{ perspective: "1000px" }}>
+            <div className="w-[80vw] h-[80vh] sm:w-[100vw] sm:h-[100vh] md:w-[120vw] md:h-[120vh] flex items-center justify-center pointer-events-auto">
+              <ELogo3D />
+            </div>
+          </div>
+        )}
+      </section>
     </div>
   );
 };

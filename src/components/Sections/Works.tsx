@@ -82,8 +82,8 @@ const WorkRow = ({ paths, limit, fallbackHeight }: { paths: string[]; limit: num
               className="w-full h-auto md:h-full md:w-auto block transition-all duration-700"
             />
 
-            {/* Sliding Strip Overlay */}
-            <div className="absolute bottom-0 left-0 w-full bg-accent translate-y-full group-hover:translate-y-0 transition-transform duration-500 ease-[0.16, 1, 0.3, 1] z-20 py-4 px-6 flex justify-between items-center">
+            {/* Sliding Strip Overlay - Hidden on mobile view */}
+            <div className="hidden md:flex absolute bottom-0 left-0 w-full bg-accent translate-y-full group-hover:translate-y-0 transition-transform duration-500 ease-[0.16, 1, 0.3, 1] z-20 py-4 px-6 justify-between items-center">
               <span className="text-white text-[10px] font-bold uppercase tracking-widest">
                 View Case Study
               </span>
@@ -130,12 +130,12 @@ export const Works = () => {
   if (loading) return null;
 
   return (
-    <section className="relative w-full pt-8 pb-32 bg-[#f5f5f5]" data-theme="light">
+    <section id="projects" className="relative w-full pt-8 pb-32 bg-[#f5f5f5]" data-theme="light">
       <div className="w-full space-y-24">
         
         {/* Main Header */}
         <div className="w-full overflow-hidden">
-          <h2 className="text-[11.5vw] font-bold tracking-tighter text-black uppercase leading-[0.8] w-full text-center whitespace-nowrap">
+          <h2 className="text-[9.5vw] md:text-[11.5vw] font-bold tracking-tighter text-black uppercase leading-[0.8] w-full text-center whitespace-nowrap">
             Selected Works
           </h2>
         </div>

@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState, useEffect, useRef } from "react";
-import { DistortedHeroBackground } from "../Effects/DistortedPixels";
+import { DistortedHeroBackground, ProceduralGrainCanvas } from "../Effects/DistortedPixels";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import "splitting/dist/splitting.css";
@@ -21,10 +21,20 @@ const designations = [
 
 export const Hero = () => {
   const [index, setIndex] = useState(0);
+  const [isDesktop, setIsDesktop] = useState(false);
   const heroRef = useRef<HTMLDivElement>(null);
   const titleRef = useRef<HTMLHeadingElement>(null);
   const bgRef = useRef<HTMLDivElement>(null);
   const videoProgressRef = useRef(0);
+
+  useEffect(() => {
+    const checkDesktop = () => {
+      setIsDesktop(window.innerWidth >= 768);
+    };
+    checkDesktop();
+    window.addEventListener("resize", checkDesktop);
+    return () => window.removeEventListener("resize", checkDesktop);
+  }, []);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -34,9 +44,9 @@ export const Hero = () => {
     return () => clearInterval(timer);
   }, []);
 
-  // Scrub the hero video playback according to scroll position
+  // Scrub the hero video playback according to scroll position on desktop
   useEffect(() => {
-    if (!heroRef.current || typeof window === "undefined") return;
+    if (!isDesktop || !heroRef.current || typeof window === "undefined") return;
 
     const trigger = ScrollTrigger.create({
       trigger: heroRef.current,
@@ -50,81 +60,75 @@ export const Hero = () => {
     return () => {
       trigger.kill();
     };
-  }, []);
+  }, [isDesktop]);
 
   useEffect(() => {
-    if (!titleRef.current) return;
+    if (!isDesktop || !titleRef.current) return;
     const titleEl = titleRef.current;
 
     import("splitting").then(({ default: Splitting }) => {
       // Split text into characters
       Splitting({ target: titleEl });
 
-    // Create colored duplicate for each character
-    const chars = titleEl.querySelectorAll(".char");
-    chars.forEach((char) => {
-      const originalChar = char.textContent;
+      // Create colored duplicate for each character
+      const chars = titleEl.querySelectorAll(".char");
+      chars.forEach((char) => {
+        const originalChar = char.textContent;
 
-      // Create wrapper
-      const wrapper = document.createElement("span");
-      wrapper.className = "char-wrapper relative inline-block overflow-hidden";
-      wrapper.style.display = "inline-block";
+        const wrapper = document.createElement("span");
+        wrapper.className = "char-wrapper relative inline-block overflow-hidden";
+        wrapper.style.display = "inline-block";
 
-      // Create original text
-      const original = document.createElement("span");
-      original.textContent = originalChar;
-      original.className = "char-original";
-      original.style.display = "block";
+        const original = document.createElement("span");
+        original.textContent = originalChar;
+        original.className = "char-original";
+        original.style.display = "block";
 
-      // Create colored duplicate
-      const colored = document.createElement("span");
-      colored.textContent = originalChar;
-      colored.className = "char-colored";
-      colored.style.display = "block";
-      colored.style.color = "#f74507";
-      colored.style.position = "absolute";
-      colored.style.left = "0";
-      colored.style.top = "0";
+        const colored = document.createElement("span");
+        colored.textContent = originalChar;
+        colored.className = "char-colored";
+        colored.style.display = "block";
+        colored.style.color = "#f74507";
+        colored.style.position = "absolute";
+        colored.style.left = "0";
+        colored.style.top = "0";
 
-      wrapper.appendChild(original);
-      wrapper.appendChild(colored);
+        wrapper.appendChild(original);
+        wrapper.appendChild(colored);
 
-      // Replace char with wrapper
-      char.parentNode?.replaceChild(wrapper, char);
+        char.parentNode?.replaceChild(wrapper, char);
 
-      // Set initial positions through GSAP so it owns the transform cache
-      gsap.set(original, { xPercent: 0 });
-      gsap.set(colored, { xPercent: -100 });
+        gsap.set(original, { xPercent: 0 });
+        gsap.set(colored, { xPercent: -100 });
 
-      // Add hover animation
-      wrapper.addEventListener("mouseenter", () => {
-        gsap.to(original, {
-          xPercent: 100,
-          duration: 0.4,
-          ease: "power2.inOut"
+        wrapper.addEventListener("mouseenter", () => {
+          gsap.to(original, {
+            xPercent: 100,
+            duration: 0.4,
+            ease: "power2.inOut"
+          });
+          gsap.to(colored, {
+            xPercent: 0,
+            duration: 0.4,
+            ease: "power2.inOut"
+          });
         });
-        gsap.to(colored, {
-          xPercent: 0,
-          duration: 0.4,
-          ease: "power2.inOut"
-        });
-      });
 
-      wrapper.addEventListener("mouseleave", () => {
-        gsap.to(original, {
-          xPercent: 0,
-          duration: 0.4,
-          ease: "power2.inOut"
-        });
-        gsap.to(colored, {
-          xPercent: -100,
-          duration: 0.4,
-          ease: "power2.inOut"
+        wrapper.addEventListener("mouseleave", () => {
+          gsap.to(original, {
+            xPercent: 0,
+            duration: 0.4,
+            ease: "power2.inOut"
+          });
+          gsap.to(colored, {
+            xPercent: -100,
+            duration: 0.4,
+            ease: "power2.inOut"
+          });
         });
       });
     });
-    });
-  }, []);
+  }, [isDesktop]);
 
   return (
     <section ref={heroRef} className="relative h-screen w-full flex items-center justify-center overflow-hidden">
@@ -133,11 +137,25 @@ export const Hero = () => {
         className="absolute inset-0 z-0"
       >
         <div className="absolute inset-0">
-          <DistortedHeroBackground imagePath="/hero-videobg.mp4" progressRef={videoProgressRef} />
+          {isDesktop ? (
+            <DistortedHeroBackground imagePath="/hero-videobg.mp4" progressRef={videoProgressRef} />
+          ) : (
+            <div className="relative w-full h-full">
+              <video
+                src="/hero-videobg.mp4"
+                autoPlay
+                loop
+                muted
+                playsInline
+                className="w-full h-full object-cover opacity-80"
+              />
+              <ProceduralGrainCanvas />
+            </div>
+          )}
         </div>
       </div>
 
-      <div className="relative z-10 w-full h-full flex flex-col justify-end items-center pb-12">
+      <div className="relative z-10 w-full h-full flex flex-col justify-end items-center pb-12 sm:pb-16">
         <div className="flex flex-col items-end w-fit px-4" data-speed="0.1">
           <motion.div
             initial={{ opacity: 0, y: 50 }}
@@ -146,8 +164,8 @@ export const Hero = () => {
           >
             <h1
               ref={titleRef}
-              className="text-[12vw] sm:text-[15vw] md:text-[18vw] font-bold tracking-tighter text-white leading-[1.1] uppercase select-none whitespace-nowrap text-right"
-              data-splitting
+              className="text-[13vw] sm:text-[15vw] md:text-[18vw] font-bold tracking-tighter text-white leading-[1.1] uppercase select-none whitespace-nowrap text-right"
+              data-splitting={isDesktop ? "" : undefined}
             >
               Emil Shain
             </h1>
@@ -161,7 +179,7 @@ export const Hero = () => {
                 animate={{ y: 0 }}
                 exit={{ y: "-100%" }}
                 transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-                className="text-accent font-sub text-lg md:text-xl font-bold uppercase block text-right absolute right-0 top-0 h-full flex items-center"
+                className="text-accent font-sub text-base sm:text-lg md:text-xl font-bold uppercase block text-right absolute right-0 top-0 h-full flex items-center"
               >
                 {designations[index]}
               </motion.span>

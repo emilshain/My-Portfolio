@@ -2,6 +2,7 @@
 
 import { CustomCursor } from "@/components/UI/CustomCursor";
 import { LoadingScreen } from "@/components/UI/LoadingScreen";
+import { MobileNav } from "@/components/UI/MobileNav";
 import { Hero } from "@/components/Sections/Hero";
 import { HeroTextOnly } from "@/components/Sections/HeroTextOnly";
 import { About } from "@/components/Sections/About";
@@ -14,10 +15,17 @@ import { Typewriter } from "@/components/UI/Typewriter";
 import { MaskedText } from "@/components/UI/MaskedText";
 import { motion, useScroll, useTransform } from "framer-motion";
 
-
-
 function ParallaxSection({ index, background, theme, children, pin, id }: { index: number; background: string; theme: string; children: React.ReactNode; pin?: boolean; id?: string }) {
-  const isOdd = pin ?? index % 2 === 1;
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
+
+  const isOdd = !isMobile && (pin ?? index % 2 === 1);
   const spacerRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
   const [active, setActive] = useState(false);
@@ -127,8 +135,6 @@ export default function Home() {
     }
   }, []);
 
-  // Map scroll from 0 to window height (hero view) to logo size
-  // 10rem = 160px, 1.25rem = 20px (~w-[1.1em])
   const logoSize = useTransform(scrollY, [0, viewportHeight], ["10rem", "1.25rem"]);
 
   const scrollToTop = () => {
@@ -140,7 +146,7 @@ export default function Home() {
     
     const observerOptions = {
       root: null,
-      rootMargin: "-10% 0px -85% 0px", // Trigger when the top of the section hits the upper part of viewport
+      rootMargin: "-10% 0px -85% 0px",
       threshold: 0
     };
 
@@ -151,15 +157,13 @@ export default function Home() {
           setIsHero(id === "hero");
           setIsSecondPage(id === "hero-text");
 
-          // Exception for first two pages
           if (id === "hero") {
-            setIsDarkText(false); // White text on Hero
+            setIsDarkText(true);
           } else if (id === "hero-text") {
-            setIsDarkText(true); // Black text on HeroTextOnly, white logo via filter
+            setIsDarkText(false);
           } else {
-            // For pages 3+: Black on odd, White on even
             const sectionIndex = Array.from(sections).indexOf(entry.target);
-            const isOddPage = sectionIndex % 2 === 0; // 0-indexed, so 0=page1(odd), 1=page2(even), 2=page3(odd)
+            const isOddPage = sectionIndex % 2 === 0;
             setIsDarkText(isOddPage);
           }
         }
@@ -168,7 +172,6 @@ export default function Home() {
 
     sections.forEach((section) => observer.observe(section));
 
-    // Dedicated observer for footer name to trigger seamless navbar transition
     const footerObserver = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
@@ -181,7 +184,6 @@ export default function Home() {
     const footerNameElement = document.querySelector("#contact");
     if (footerNameElement) footerObserver.observe(footerNameElement);
 
-    // Live Indian Time Update
     const updateTime = () => {
       const now = new Date();
       const timeStr = now.toLocaleTimeString("en-US", {
@@ -205,12 +207,12 @@ export default function Home() {
   }, []);
 
   const backgrounds = [
-    "#000000",      // Hero
-    "#f74507",      // HeroTextOnly (Orange Accent)
-    "#ffffff",      // About (White)
-    "#000000",      // ELogo3D (Dark with achievement strips background)
-    "#f5f5f5",      // Works (Off-white)
-    "#000000",      // Footer (Dark),
+    "#000000",
+    "#f74507",
+    "#ffffff",
+    "#000000",
+    "#f5f5f5",
+    "#000000",
   ];
 
   const sections = [
@@ -226,9 +228,11 @@ export default function Home() {
     <main className="relative selection:bg-accent/30 overflow-x-clip">
       <LoadingScreen />
       <CustomCursor />
+      <MobileNav isDarkText={isDarkText} />
 
+      {/* Top Left Logo & Title */}
       <div
-        className={`fixed top-8 left-8 z-50 flex items-center gap-2.5 transition-colors duration-500 pointer-events-none ${
+        className={`fixed top-5 left-5 md:top-8 md:left-8 z-50 flex items-center gap-2.5 transition-colors duration-500 pointer-events-none ${
           isDarkText ? "text-black" : "text-white"
         }`}
       >
@@ -250,20 +254,20 @@ export default function Home() {
         <button
           type="button"
           onClick={scrollToTop}
-          className="pointer-events-auto text-xl font-bold tracking-tighter text-left cursor-pointer uppercase"
+          className="pointer-events-auto text-lg sm:text-xl font-bold tracking-tighter text-left cursor-pointer uppercase"
           aria-label="Scroll to top"
         >
           <MaskedText 
             text="Emil Shain" 
-            className="text-xl font-bold tracking-tighter"
+            className="text-lg sm:text-xl font-bold tracking-tighter"
             reveal={!isFooterVisible && !isHero}
           />
         </button>
       </div>
 
-      {/* Location & Time - Top Right */}
+      {/* Location & Time - Top Right (Desktop Only) */}
       <div
-        className={`fixed top-8 right-8 z-50 transition-all duration-500 pointer-events-none ${
+        className={`fixed top-8 right-8 z-50 transition-all duration-500 pointer-events-none hidden md:block ${
           isDarkText ? "text-black" : "text-white"
         } ${isFooterVisible ? "opacity-0 translate-y-[-10px]" : "opacity-100 translate-y-0"}`}
       >
@@ -273,8 +277,8 @@ export default function Home() {
         </div>
       </div>
 
-      {/* Navigation - Overlay */}
-      <nav className="fixed top-0 left-0 w-full p-8 z-50 flex justify-center pointer-events-none">
+      {/* Desktop Navigation - Overlay */}
+      <nav className="fixed top-0 left-0 w-full p-8 z-50 hidden md:flex justify-center pointer-events-none">
         <div className="flex justify-center gap-8 text-sm font-medium pointer-events-auto">
           {[
             { name: "About", href: "#about" },
@@ -307,13 +311,6 @@ export default function Home() {
           ))}
         </div>
       </nav>
-
-
-
-
-
-
-
 
       {/* Sections with Parallax */}
       <div className="relative z-10" ref={sectionsRef}>

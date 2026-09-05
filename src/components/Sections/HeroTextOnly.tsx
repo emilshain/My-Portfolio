@@ -37,7 +37,7 @@ export const HeroTextOnly = () => {
   return (
     <section ref={sectionRef} className="relative min-h-screen w-full flex items-center justify-center bg-transparent px-6 overflow-hidden">
       <div className="max-w-6xl mx-auto flex flex-col items-center text-center">
-        <h2 className="text-5xl md:text-8xl lg:text-9xl font-bold tracking-tighter text-black uppercase leading-[0.85] text-center flex flex-col items-center">
+        <h2 className="text-3xl sm:text-5xl md:text-8xl lg:text-9xl font-bold tracking-tighter text-black uppercase leading-[0.85] text-center flex flex-col items-center">
           
           {/* Line 1: Designing */}
           <div className="overflow-hidden w-fit">
@@ -57,7 +57,7 @@ export const HeroTextOnly = () => {
               initial={{ x: "120%", opacity: 0 }}
               animate={isInView ? { x: 0, opacity: 1 } : { x: "120%", opacity: 0 }}
               transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1], delay: 0.2 }}
-              className="flex items-baseline gap-x-4 px-2"
+              className="flex items-baseline gap-x-2 sm:gap-x-4 px-2"
             >
               <span className="relative inline-flex h-[0.85em] overflow-hidden align-baseline">
                 {/* Reference span to maintain width naturally */}

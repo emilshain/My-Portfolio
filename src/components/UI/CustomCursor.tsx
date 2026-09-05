@@ -9,6 +9,7 @@ const POINTER_SIZE = 24; // Smaller pointer size
 
 export const CustomCursor = () => {
   const [isHovered, setIsHovered] = useState(false);
+  const [isDesktop, setIsDesktop] = useState(false);
 
   const mouseX = useMotionValue(-100);
   const mouseY = useMotionValue(-100);
@@ -20,6 +21,17 @@ export const CustomCursor = () => {
   const size = useSpring(BASE_SIZE, springOptions);
 
   useEffect(() => {
+    const checkDesktop = () => {
+      setIsDesktop(window.innerWidth >= 768);
+    };
+    checkDesktop();
+    window.addEventListener("resize", checkDesktop);
+    return () => window.removeEventListener("resize", checkDesktop);
+  }, []);
+
+  useEffect(() => {
+    if (!isDesktop) return;
+
     const handleMouseMove = (e: MouseEvent) => {
       mouseX.set(e.clientX);
       mouseY.set(e.clientY);
@@ -31,11 +43,14 @@ export const CustomCursor = () => {
 
     window.addEventListener("mousemove", handleMouseMove);
     return () => window.removeEventListener("mousemove", handleMouseMove);
-  }, [mouseX, mouseY]);
+  }, [mouseX, mouseY, isDesktop]);
 
   useEffect(() => {
+    if (!isDesktop) return;
     size.set(isHovered ? POINTER_SIZE : BASE_SIZE);
-  }, [isHovered, size]);
+  }, [isHovered, size, isDesktop]);
+
+  if (!isDesktop) return null;
 
   return (
     <motion.div

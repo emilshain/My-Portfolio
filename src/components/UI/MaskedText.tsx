@@ -67,6 +67,7 @@ export const MaskedText: React.FC<MaskedTextProps> = ({ text, className = "", re
   }, [reveal, delay, text]);
 
   const handleMouseEnter = () => {
+    if (typeof window !== "undefined" && window.innerWidth < 768) return;
     const chars = containerRef.current?.querySelectorAll(".content-span");
     if (chars) {
       gsap.to(chars, {
@@ -80,6 +81,7 @@ export const MaskedText: React.FC<MaskedTextProps> = ({ text, className = "", re
   };
   
   const handleMouseLeave = () => {
+    if (typeof window !== "undefined" && window.innerWidth < 768) return;
     const chars = containerRef.current?.querySelectorAll(".content-span");
     if (chars) {
       gsap.to(chars, {
