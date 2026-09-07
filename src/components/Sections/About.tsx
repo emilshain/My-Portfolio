@@ -15,7 +15,7 @@ export const About = () => {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
-            className="text-[9.5vw] md:text-[6.5vw] font-bold tracking-tighter leading-[0.85] text-black uppercase"
+            className="text-[9.5vw] md:text-[6.5vw] tracking-tighter leading-[0.85] text-black uppercase"
           >
             I&apos;m Emil — <br className="hidden md:block" />
             a designer and <br className="hidden md:block" />
@@ -32,7 +32,7 @@ export const About = () => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 1, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
-              className="text-2xl md:text-3xl lg:text-4xl text-black/90 leading-[1.2] tracking-tight font-medium"
+              className="text-2xl md:text-3xl lg:text-4xl text-black/90 leading-[1.2] tracking-tight "
             >
               Been doing freelance design work for 4 years — covers, posters, brand identities, social content, video edits. Since 2025 I&apos;ve been building for the web too. Currently focusing on creating high-end digital experiences that bridge the gap between design and development.
             </motion.p>

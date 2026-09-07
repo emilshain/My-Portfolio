@@ -1,16 +1,5 @@
 import type { Metadata } from "next";
-import { Geist, Manrope } from "next/font/google";
 import "./globals.css";
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const manrope = Manrope({
-  variable: "--font-manrope",
-  subsets: ["latin"],
-});
 
 export const metadata: Metadata = {
   title: "Emil Shain | Frontend Developer",
@@ -28,7 +17,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${manrope.variable} antialiased`}
+      className="antialiased"
     >
       <body className="bg-[#050505]">
         <SmoothScroll>{children}</SmoothScroll>

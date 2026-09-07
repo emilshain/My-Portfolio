@@ -1,11 +1,25 @@
 "use client";
 
-import { useEffect, useLayoutEffect, useRef } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
+}
+
+function useIsMobile(): boolean {
+  if (typeof window === "undefined" || !window.matchMedia) {
+    return false;
+  }
+  const query = window.matchMedia("(max-width: 767px)");
+  const [isMobile, setIsMobile] = useState(query.matches);
+  useEffect(() => {
+    const handler = (event: MediaQueryListEvent) => setIsMobile(event.matches);
+    query.addEventListener("change", handler);
+    return () => query.removeEventListener("change", handler);
+  }, [query]);
+  return isMobile;
 }
 
 interface MaskedTextProps {
@@ -17,6 +31,7 @@ interface MaskedTextProps {
 
 export const MaskedText: React.FC<MaskedTextProps> = ({ text, className = "", reveal, delay = 0 }) => {
   const containerRef = useRef<HTMLSpanElement>(null);
+  const isMobile = useIsMobile();
 
   useLayoutEffect(() => {
     const chars = containerRef.current?.querySelectorAll(".content-span");
@@ -67,7 +82,7 @@ export const MaskedText: React.FC<MaskedTextProps> = ({ text, className = "", re
   }, [reveal, delay, text]);
 
   const handleMouseEnter = () => {
-    if (typeof window !== "undefined" && window.innerWidth < 768) return;
+    if (isMobile) return;
     const chars = containerRef.current?.querySelectorAll(".content-span");
     if (chars) {
       gsap.to(chars, {
@@ -81,7 +96,7 @@ export const MaskedText: React.FC<MaskedTextProps> = ({ text, className = "", re
   };
   
   const handleMouseLeave = () => {
-    if (typeof window !== "undefined" && window.innerWidth < 768) return;
+    if (isMobile) return;
     const chars = containerRef.current?.querySelectorAll(".content-span");
     if (chars) {
       gsap.to(chars, {
@@ -98,13 +113,12 @@ export const MaskedText: React.FC<MaskedTextProps> = ({ text, className = "", re
     <span 
       ref={containerRef} 
       className={`inline-flex items-center relative z-10 pointer-events-auto ${className}`}
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
+      {...(isMobile ? {} : { onMouseEnter: handleMouseEnter, onMouseLeave: handleMouseLeave })}
     >
       {text.split("").map((char, i) => (
         <span 
           key={i} 
-          className="masking-span relative overflow-hidden inline-block"
+          className="masking-span relative overflow-hidden inline-block leading-[1.2]"
         >
           <span 
             className="content-span relative block" 

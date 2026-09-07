@@ -60,6 +60,10 @@ const WorkRow = ({ paths, limit, fallbackHeight }: { paths: string[]; limit: num
   const sumAspects = knownAspects.length > 0 ? knownAspects.reduce((sum, a) => sum + a, 0) : images.length * 1.5;
   const rowHeight = width > 0 && sumAspects > 0 ? Math.max(1, (width - totalGap) / sumAspects) : null;
 
+  // Disable the framer-motion entrance and the sliding strip overlay on mobile so the
+  // works section has no interactive or animated effects and renders the same everywhere.
+  const isMobile = typeof window !== "undefined" && window.innerWidth < 768;
+
   return (
     <div
       ref={ref}
@@ -69,10 +73,9 @@ const WorkRow = ({ paths, limit, fallbackHeight }: { paths: string[]; limit: num
       {images.map((imagePath, idx) => (
         <motion.div
           key={imagePath}
-          initial={{ opacity: 0, scale: 0.95 }}
-          whileInView={{ opacity: 1, scale: 1 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8, delay: idx * 0.1, ease: [0.16, 1, 0.3, 1] }}
+          initial={isMobile ? {} : { opacity: 0, scale: 0.95 }}
+          animate={isMobile ? {} : { opacity: 1, scale: 1 }}
+          transition={isMobile ? undefined : { duration: 0.8, delay: idx * 0.1, ease: [0.16, 1, 0.3, 1] }}
           className="group cursor-pointer relative h-full w-full md:w-auto md:flex-none"
         >
           <div className="bg-zinc-900/5 h-full relative overflow-hidden">
@@ -84,10 +87,10 @@ const WorkRow = ({ paths, limit, fallbackHeight }: { paths: string[]; limit: num
 
             {/* Sliding Strip Overlay - Hidden on mobile view */}
             <div className="hidden md:flex absolute bottom-0 left-0 w-full bg-accent translate-y-full group-hover:translate-y-0 transition-transform duration-500 ease-[0.16, 1, 0.3, 1] z-20 py-4 px-6 justify-between items-center">
-              <span className="text-white text-[10px] font-bold uppercase tracking-widest">
+              <span className="text-white text-[10px] uppercase tracking-widest">
                 View Case Study
               </span>
-              <span className="text-white/50 text-[10px] font-bold uppercase tracking-widest">
+              <span className="text-white/50 text-[10px] uppercase tracking-widest">
                 ↗
               </span>
             </div>
@@ -135,7 +138,7 @@ export const Works = () => {
         
         {/* Main Header */}
         <div className="w-full overflow-hidden">
-          <h2 className="text-[9.5vw] md:text-[11.5vw] font-bold tracking-tighter text-black uppercase leading-[0.8] w-full text-center whitespace-nowrap">
+          <h2 className="text-[9.5vw] md:text-[11.5vw] tracking-tighter text-black uppercase leading-[0.8] w-full text-center whitespace-nowrap">
             Selected Works
           </h2>
         </div>
@@ -154,7 +157,7 @@ export const Works = () => {
         {/* Footer CTA */}
         <div className="flex justify-center pt-12 px-4">
           <Magnetic strength={0.3}>
-            <button className="border border-black/20 px-12 py-4 text-xs uppercase tracking-widest hover:bg-black hover:text-white transition-colors duration-500 font-bold text-black cursor-pointer">
+            <button className="border border-black/20 px-12 py-4 text-xs uppercase tracking-widest hover:bg-black hover:text-white transition-colors duration-500 text-black cursor-pointer">
               See All Works
             </button>
           </Magnetic>

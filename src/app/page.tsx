@@ -254,12 +254,12 @@ export default function Home() {
         <button
           type="button"
           onClick={scrollToTop}
-          className="pointer-events-auto text-lg sm:text-xl font-bold tracking-tighter text-left cursor-pointer uppercase"
+          className="pointer-events-auto text-lg sm:text-xl tracking-tighter text-left cursor-pointer uppercase"
           aria-label="Scroll to top"
         >
           <MaskedText 
             text="Emil Shain" 
-            className="text-lg sm:text-xl font-bold tracking-tighter"
+            className="text-lg sm:text-xl tracking-tighter"
             reveal={!isFooterVisible && !isHero}
           />
         </button>
@@ -271,7 +271,7 @@ export default function Home() {
           isDarkText ? "text-black" : "text-white"
         } ${isFooterVisible ? "opacity-0 translate-y-[-10px]" : "opacity-100 translate-y-0"}`}
       >
-        <div className="text-sm font-bold tracking-tighter flex gap-3 items-center uppercase">
+        <div className="text-sm tracking-tighter flex gap-3 items-center uppercase">
           <span>Kerala, IN</span>
           <span>{currentTime} IST</span>
         </div>
@@ -279,7 +279,7 @@ export default function Home() {
 
       {/* Desktop Navigation - Overlay */}
       <nav className="fixed top-0 left-0 w-full p-8 z-50 hidden md:flex justify-center pointer-events-none">
-        <div className="flex justify-center gap-8 text-sm font-medium pointer-events-auto">
+        <div className="flex justify-center gap-8 text-sm pointer-events-auto">
           {[
             { name: "About", href: "#about" },
             { name: "Projects", href: "#projects" },
@@ -297,13 +297,13 @@ export default function Home() {
                   if (target) target.scrollIntoView({ behavior: 'smooth' });
                 }
               }}
-              className={`pointer-events-auto font-bold tracking-tighter uppercase ${
+              className={`pointer-events-auto tracking-tighter uppercase ${
                 isDarkText ? "text-black" : "text-white"
               }`}
             >
               <MaskedText 
                 text={item.name} 
-                className="font-bold tracking-tighter uppercase"
+                className="tracking-tighter uppercase"
                 reveal={!isFooterVisible}
                 delay={index * 0.05}
               />

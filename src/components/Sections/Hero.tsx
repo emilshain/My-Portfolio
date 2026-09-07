@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState, useEffect, useRef } from "react";
-import { DistortedHeroBackground, ProceduralGrainCanvas } from "../Effects/DistortedPixels";
+import { DistortedHeroBackground, ProceduralGrainCanvas, useIsMobile } from "../Effects/DistortedPixels";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import "splitting/dist/splitting.css";
@@ -26,6 +26,9 @@ export const Hero = () => {
   const titleRef = useRef<HTMLHeadingElement>(null);
   const bgRef = useRef<HTMLDivElement>(null);
   const videoProgressRef = useRef(0);
+  const isMobile = useIsMobile();
+  const isMobileMarkup = isMobile;
+  const isNonInteractiveHandset = isMobile;
 
   useEffect(() => {
     const checkDesktop = () => {
@@ -44,9 +47,10 @@ export const Hero = () => {
     return () => clearInterval(timer);
   }, []);
 
-  // Scrub the hero video playback according to scroll position on desktop
+  // Scrub the hero video playback according to scroll position on desktop only (no
+  // interactive distortion effect on mobile).
   useEffect(() => {
-    if (!isDesktop || !heroRef.current || typeof window === "undefined") return;
+    if (!isNonInteractiveHandset && !heroRef.current || typeof window === "undefined") return;
 
     const trigger = ScrollTrigger.create({
       trigger: heroRef.current,
@@ -60,7 +64,7 @@ export const Hero = () => {
     return () => {
       trigger.kill();
     };
-  }, [isDesktop]);
+  }, [isNonInteractiveHandset]);
 
   useEffect(() => {
     if (!isDesktop || !titleRef.current) return;
@@ -70,13 +74,17 @@ export const Hero = () => {
       // Split text into characters
       Splitting({ target: titleEl });
 
-      // Create colored duplicate for each character
+      // Create colored duplicate for each character (skip on mobile — no hover-driven swap).
       const chars = titleEl.querySelectorAll(".char");
-      chars.forEach((char) => {
+      chars.forEach((char, charIdx) => {
         const originalChar = char.textContent;
 
+        if (isNonInteractiveHandset) {
+          // Mobile: keep the title plain — no colored overlay, no split.
+          return;
+        }
         const wrapper = document.createElement("span");
-        wrapper.className = "char-wrapper relative inline-block overflow-hidden";
+        wrapper.className = "char-wrapper relative inline-block overflow-hidden leading-[1.2]";
         wrapper.style.display = "inline-block";
 
         const original = document.createElement("span");
@@ -126,6 +134,13 @@ export const Hero = () => {
             ease: "power2.inOut"
           });
         });
+        
+        // On mobile, keep the title readable without the colored overlay swap.
+        if (isNonInteractiveHandset) {
+          const coloredClone = colored.cloneNode(true);
+          wrapper.appendChild(coloredClone);
+          (coloredClone as HTMLSpanElement).style.color = "inherit";
+        }
       });
     });
   }, [isDesktop]);
@@ -147,7 +162,7 @@ export const Hero = () => {
                 loop
                 muted
                 playsInline
-                className="w-full h-full object-cover opacity-80"
+                className="w-full h-full object-cover opacity-[0.85]"
               />
               <ProceduralGrainCanvas />
             </div>
@@ -164,7 +179,7 @@ export const Hero = () => {
           >
             <h1
               ref={titleRef}
-              className="text-[13vw] sm:text-[15vw] md:text-[18vw] font-bold tracking-tighter text-white leading-[1.1] uppercase select-none whitespace-nowrap text-right"
+              className="text-[13vw] sm:text-[15vw] md:text-[18vw] tracking-tighter text-white leading-[1.1] uppercase select-none whitespace-nowrap text-right"
               data-splitting={isDesktop ? "" : undefined}
             >
               Emil Shain
@@ -175,11 +190,11 @@ export const Hero = () => {
             <AnimatePresence>
               <motion.span
                 key={designations[index]}
-                initial={{ y: "100%" }}
-                animate={{ y: 0 }}
-                exit={{ y: "-100%" }}
-                transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-                className="text-accent font-sub text-base sm:text-lg md:text-xl font-bold uppercase block text-right absolute right-0 top-0 h-full flex items-center"
+                initial={isNonInteractiveHandset ? {} : { y: "100%" }}
+                animate={isNonInteractiveHandset ? {} : { y: 0 }}
+                exit={isNonInteractiveHandset ? {} : { y: "-100%" }}
+                transition={isNonInteractiveHandset ? undefined : { duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+                className="text-accent font-sub text-base sm:text-lg md:text-xl uppercase block text-right absolute right-0 top-0 h-full flex items-center"
               >
                 {designations[index]}
               </motion.span>

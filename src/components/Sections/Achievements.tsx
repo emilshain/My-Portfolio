@@ -18,13 +18,13 @@ function AchievementLine({ achievement }: { achievement: Achievement; index: num
     >
       <div className="flex items-baseline gap-3 whitespace-nowrap transition-transform duration-300 ease-out group-hover:translate-x-5">
         <span
-          className="font-bold text-white/60 group-hover:text-white transition-colors uppercase"
+          className="text-white/60 group-hover:text-white transition-colors uppercase"
           style={{ fontSize: "clamp(2rem, 6vw, 8vw)" }}
         >
           {achievement.title}
         </span>
         <span
-          className="bg-accent text-white px-3 md:px-4 py-1 md:py-2 font-bold uppercase tracking-wider flex-shrink-0"
+          className="bg-accent text-white px-3 md:px-4 py-1 md:py-2 uppercase tracking-wider flex-shrink-0"
           style={{ fontSize: "clamp(0.5rem, 1.5vw, 2rem)" }}
         >
           {achievement.result}

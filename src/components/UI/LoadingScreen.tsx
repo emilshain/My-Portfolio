@@ -25,7 +25,7 @@ export const LoadingScreen = () => {
           transition={{ duration: 1.25, ease: [0.76, 0, 0.24, 1] }}
         >
           <motion.p
-            className="text-xl font-bold tracking-tighter text-white"
+            className="text-xl tracking-tighter text-white"
             initial={{ opacity: 0, y: 4 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.35, delay: 0.3, ease: "easeOut" }}

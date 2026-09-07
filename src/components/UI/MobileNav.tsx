@@ -103,7 +103,7 @@ export const MobileNav = ({ isDarkText = false }: MobileNavProps) => {
                 <div className="relative w-8 h-8">
                   <Image src="/logo.png" alt="Logo" fill className="object-contain" />
                 </div>
-                <span className="font-bold tracking-tighter text-lg uppercase">Emil Shain</span>
+                <span className="tracking-tighter text-lg uppercase">Emil Shain</span>
               </div>
               <div className="text-xs font-mono text-white/50 uppercase">
                 Kerala, IN • {currentTime}
@@ -125,7 +125,7 @@ export const MobileNav = ({ isDarkText = false }: MobileNavProps) => {
                   <button
                     type="button"
                     onClick={() => handleNavClick(item.href)}
-                    className="text-4xl sm:text-5xl font-bold tracking-tighter uppercase text-left hover:text-accent transition-colors flex items-center justify-between w-full group cursor-pointer"
+                    className="text-4xl sm:text-5xl tracking-tighter uppercase text-left hover:text-accent transition-colors flex items-center justify-between w-full group cursor-pointer"
                   >
                     <span>{item.name}</span>
                     <ArrowUpRight className="w-8 h-8 opacity-0 group-hover:opacity-100 transition-opacity text-accent" />
@@ -142,13 +142,13 @@ export const MobileNav = ({ isDarkText = false }: MobileNavProps) => {
                 </span>
                 <a
                   href="mailto:emilshain.official@gmail.com"
-                  className="text-sm font-medium hover:text-accent transition-colors block text-white/90"
+                  className="text-sm hover:text-accent transition-colors block text-white/90"
                 >
                   emilshain.official@gmail.com
                 </a>
                 <a
                   href="tel:+919633285499"
-                  className="text-sm font-medium hover:text-accent transition-colors block text-white/70 mt-1"
+                  className="text-sm hover:text-accent transition-colors block text-white/70 mt-1"
                 >
                   +91 96332 85499
                 </a>
@@ -158,7 +158,7 @@ export const MobileNav = ({ isDarkText = false }: MobileNavProps) => {
                 <span className="text-xs font-mono text-white/40 uppercase tracking-widest block mb-2">
                   Socials
                 </span>
-                <div className="flex flex-wrap gap-4 text-xs font-bold uppercase tracking-wider">
+                <div className="flex flex-wrap gap-4 text-xs uppercase tracking-wider">
                   {socialLinks.map((s) => (
                     <a
                       key={s.name}

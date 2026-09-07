@@ -15,8 +15,12 @@ export const Magnetic = ({ children, strength = 0.5 }: MagneticProps) => {
   const [canHover, setCanHover] = useState(false);
 
   useEffect(() => {
+    // Treat mobile viewports (narrow + no persistent hover) as non-hoverable so the
+    // magnetic effect is never set up or rendered there.
     const checkHover = () => {
-      setCanHover(window.innerWidth >= 768 || window.matchMedia("(hover: hover)").matches);
+      const belowTablet = window.innerWidth < 768;
+      const hasHover = window.matchMedia("(hover: hover)").matches;
+      setCanHover(!belowTablet && hasHover);
     };
     checkHover();
     window.addEventListener("resize", checkHover);
@@ -80,6 +84,8 @@ export const Magnetic = ({ children, strength = 0.5 }: MagneticProps) => {
     return children;
   }
 
+  // On desktop the padding shrink-wrap lets the magnetic child drift without moving
+  // the container; the child div is what receives the gsap x/y transform.
   return (
     <div ref={containerRef} className="relative inline-block p-12 -m-12">
       <div ref={childRef}>

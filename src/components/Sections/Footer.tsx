@@ -3,8 +3,8 @@
 import { motion } from "framer-motion";
 import { ArrowUp } from "lucide-react";
 import Image from "next/image";
-import { Typewriter } from "@/components/UI/Typewriter";
 import { MaskedText } from "@/components/UI/MaskedText";
+import { ParticleText } from "@/components/UI/ParticleText";
 import { useInView } from "framer-motion";
 import { useRef } from "react";
 
@@ -38,10 +38,10 @@ export const Footer = () => {
           <div className="text-white/40 text-sm mb-6 h-5">
             <MaskedText text="Contact" reveal={isInView} delay={0.05} className="text-white/40 text-sm" />
           </div>
-          <a href="mailto:emilshain.official@gmail.com" className="contact-fs font-medium tracking-tight hover:text-accent transition-colors duration-300">
+          <a href="mailto:emilshain.official@gmail.com" className="contact-fs tracking-tight hover:text-accent transition-colors duration-300">
             <MaskedText text="emilshain.official@gmail.com" reveal={isInView} className="inline-flex" delay={0.1} />
           </a>
-          <a href="tel:+919633285499" className="contact-fs font-medium tracking-tight mt-4 hover:text-accent transition-colors duration-300">
+          <a href="tel:+919633285499" className="contact-fs tracking-tight mt-4 hover:text-accent transition-colors duration-300">
             <MaskedText text="+91 96332 85499" reveal={isInView} className="inline-flex" delay={0.2} />
           </a>
         </div>
@@ -135,17 +135,8 @@ export const Footer = () => {
         </div>
         
         {/* Huge Name */}
-        <div className="relative w-screen left-1/2 -translate-x-1/2 px-0 pt-0 pb-0 overflow-visible" ref={nameRef}>
-          <h2 
-            className="text-[18vw] font-bold leading-none tracking-tighter text-white text-center select-none whitespace-nowrap uppercase w-full"
-          >
-            <Typewriter 
-              text="Emil Shain" 
-              isUntyping={!isInView} 
-              speed={0.02} 
-              delay={0}
-            />
-          </h2>
+        <div className="relative w-screen left-1/2 -translate-x-1/2 px-0 pt-0 pb-0 overflow-visible h-[20vw]" ref={nameRef}>
+          <ParticleText text="EMIL SHAIN" className="w-full h-full" />
         </div>
       </div>
     </footer>

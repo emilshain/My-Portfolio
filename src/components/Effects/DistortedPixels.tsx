@@ -70,6 +70,27 @@ const vertexShader = `
   }
 `;
 
+export function useIsMobile(): boolean {
+  /*
+   * SSR-safe mobile detection via matchMedia so the hero's interactive grain overlay
+   * can be swapped for a plain video on mobile without a layout jump.
+   */
+  if (typeof window === "undefined" || !window.matchMedia) {
+    return false;
+  }
+
+  const query = window.matchMedia("(max-width: 767px)");
+  const [isMobile, setIsMobile] = useState(query.matches);
+
+  useEffect(() => {
+    const handler = (event: MediaQueryListEvent) => setIsMobile(event.matches);
+    query.addEventListener("change", handler);
+    return () => query.removeEventListener("change", handler);
+  }, [query]);
+
+  return isMobile;
+}
+
 const DistortionPlane = ({ imagePath, progressRef }: { imagePath: string; progressRef: { current: number } }) => {
   const meshRef = useRef<THREE.Mesh>(null);
   const texture = useVideoTexture(imagePath, { loop: false, muted: true, start: false });
@@ -151,7 +172,7 @@ const DistortionPlane = ({ imagePath, progressRef }: { imagePath: string; progre
     uTexture: { value: texture },
     uDataTexture: { value: dataTexture },
     uOpacity: { value: 1.0 }, // Full opacity for maximum clarity
-    uGrainStrength: { value: 0.30 }, // Balanced gritty and noisy procedural grain
+    uGrainStrength: { value: 0.12 }, // Subtler grain
     resolution: { value: new THREE.Vector4() }
   }), [texture, dataTexture]);
 
@@ -263,11 +284,21 @@ export const DistortedHeroBackground = ({ imagePath, progressRef }: { imagePath:
   );
 };
 
-export const ProceduralGrainCanvas = ({ grainStrength = 0.30 }: { grainStrength?: number }) => {
+export const ProceduralGrainCanvas = ({ grainStrength = 0.12, forceShow = false }: { grainStrength?: number; forceShow?: boolean }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  // Only render the animated full-resolution grain on devices that have the bandwidth
+  // and input model (mouse-driven desktop) this overlay was designed for. On mobile the
+  // hero already uses a real video/grain texture, so a separate canvas grain both looks
+  // different and adds pointless cost.
+  const isMobile = useIsMobile();
 
+  if (!forceShow && isMobile) {
+    return null;
+  }
+
+  const canvasRefInner = useRef<HTMLCanvasElement>(null);
   useEffect(() => {
-    const canvas = canvasRef.current;
+    const canvas = canvasRefInner.current;
     if (!canvas) return;
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
@@ -336,9 +367,11 @@ export const ProceduralGrainCanvas = ({ grainStrength = 0.30 }: { grainStrength?
 
   return (
     <canvas
-      ref={canvasRef}
+      ref={canvasRefInner}
       className="absolute inset-0 w-full h-full pointer-events-none mix-blend-overlay opacity-80 z-10"
     />
   );
 };
+
+
 

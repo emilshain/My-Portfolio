@@ -20,7 +20,8 @@ const achievements = [
 ];
 
 export const ELogo3DSection = () => {
-  const sectionRef = useRef<HTMLDivElement>(null);
+  const sectionRef = useRef<HTMLElement>(null);
+  const wrapperRef = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const lineRefs = useRef<(HTMLSpanElement | null)[]>([]);
   const [scrollDistance, setScrollDistance] = useState(0);
@@ -39,9 +40,10 @@ export const ELogo3DSection = () => {
     if (typeof window === "undefined") return;
 
     const section = sectionRef.current;
+    const wrapper = wrapperRef.current;
     const container = containerRef.current;
     const lines = lineRefs.current.filter(Boolean) as HTMLSpanElement[];
-    if (!section || !container || lines.length === 0) return;
+    if (!section || !wrapper || !container || lines.length === 0) return;
 
     const getLineMaxScroll = (line: HTMLSpanElement) => Math.max(0, line.scrollWidth - window.innerWidth);
     const getOverallMaxScroll = () => Math.max(...lines.map(getLineMaxScroll));
@@ -52,7 +54,11 @@ export const ELogo3DSection = () => {
     const tl = gsap.timeline({
       scrollTrigger: {
         id: "elogo3d-scrub",
-        trigger: section,
+        // Anchor to the static wrapper, not the sticky <section>: a sticky
+        // element's measured position changes with the current scroll, so any
+        // ScrollTrigger refresh while pinned re-anchors start/end to the live
+        // scroll position and restarts the scrub as the section scrolls away.
+        trigger: wrapper,
         start: "top top",
         end: () => "+=" + getOverallMaxScroll(),
         scrub: true,
@@ -61,8 +67,15 @@ export const ELogo3DSection = () => {
     });
 
     lines.forEach((line) => {
+      // Function-based so refresh (fonts, resize) re-derives each target
       tl.to(line, { x: () => -getLineMaxScroll(line), ease: "none" }, 0);
     });
+
+    // Re-measure once webfonts are in so scroll distances use final glyph widths
+    let disposed = false;
+    document.fonts?.ready.then(() => {
+      if (!disposed) ScrollTrigger.refresh();
+    }).catch(() => {});
 
     const handleResize = () => {
       setScrollDistance(getHoldDistance());
@@ -87,6 +100,7 @@ export const ELogo3DSection = () => {
     }
 
     return () => {
+      disposed = true;
       window.removeEventListener("resize", handleResize);
       if (handleMouseMove) {
         section.removeEventListener("mousemove", handleMouseMove);
@@ -97,7 +111,7 @@ export const ELogo3DSection = () => {
   }, [isDesktop]);
 
   return (
-    <div className="relative w-full" style={{ height: `calc(100vh + ${scrollDistance}px)` }}>
+    <div ref={wrapperRef} className="relative w-full" style={{ height: `calc(100vh + ${scrollDistance}px)` }}>
       <section
         ref={sectionRef}
         className="sticky top-0 w-full h-screen bg-black overflow-hidden"
@@ -108,7 +122,7 @@ export const ELogo3DSection = () => {
             <span
               key={i}
               ref={(el) => { lineRefs.current[i] = el; }}
-              className="text-[10vw] sm:text-[12vw] md:text-[14vw] font-bold tracking-tighter text-white leading-[0.9] uppercase whitespace-nowrap"
+              className="text-[10vw] sm:text-[12vw] md:text-[14vw] tracking-tighter text-white leading-[0.9] uppercase whitespace-nowrap"
               style={{ willChange: "transform" }}
             >
               {a.title}
