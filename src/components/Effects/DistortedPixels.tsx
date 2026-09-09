@@ -284,17 +284,8 @@ export const DistortedHeroBackground = ({ imagePath, progressRef }: { imagePath:
   );
 };
 
-export const ProceduralGrainCanvas = ({ grainStrength = 0.12, forceShow = false }: { grainStrength?: number; forceShow?: boolean }) => {
+export const ProceduralGrainCanvas = ({ grainStrength = 0.12 }: { grainStrength?: number }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  // Only render the animated full-resolution grain on devices that have the bandwidth
-  // and input model (mouse-driven desktop) this overlay was designed for. On mobile the
-  // hero already uses a real video/grain texture, so a separate canvas grain both looks
-  // different and adds pointless cost.
-  const isMobile = useIsMobile();
-
-  if (!forceShow && isMobile) {
-    return null;
-  }
 
   const canvasRefInner = useRef<HTMLCanvasElement>(null);
   useEffect(() => {
@@ -307,8 +298,8 @@ export const ProceduralGrainCanvas = ({ grainStrength = 0.12, forceShow = false 
     let time = 0;
 
     const resize = () => {
-      canvas.width = Math.ceil(window.innerWidth / 2);
-      canvas.height = Math.ceil(window.innerHeight / 2);
+      canvas.width = Math.ceil(window.innerWidth);
+      canvas.height = Math.ceil(window.innerHeight);
     };
     resize();
     window.addEventListener("resize", resize);

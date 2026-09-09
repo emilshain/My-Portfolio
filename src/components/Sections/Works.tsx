@@ -134,18 +134,19 @@ export const Works = () => {
 
   return (
     <section id="projects" className="relative w-full pt-8 pb-32 bg-[#f5f5f5]" data-theme="light">
-      <div className="w-full space-y-24">
+      <div className="w-full">
         
         {/* Main Header */}
         <div className="w-full overflow-hidden">
           <h2 className="text-[9.5vw] md:text-[11.5vw] tracking-tighter text-black uppercase leading-[0.8] w-full text-center whitespace-nowrap">
             Selected Works
           </h2>
+          <div className="mt-6 w-full h-px bg-black" />
         </div>
 
         {/* Categories Map - only render rows for categories that actually have works,
             so empty categories don't leave dead vertical space before the CTA */}
-        <div className="space-y-24">
+        <div className="mt-8 space-y-24">
           {categories.filter((cat) => (workData[cat.id] ?? []).length > 0).map((cat) => (
             <div key={cat.id} className="w-full px-4">
               {/* Row for this category - height derives from the displayed works */}

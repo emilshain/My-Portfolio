@@ -64,6 +64,36 @@ export const Hero = () => {
     };
   }, [isNonInteractiveHandset]);
 
+  // Parallax the hero background starting exactly at its natural position on load
+  // (the generic [data-speed] parallax assumes content enters from below, which
+  // mis-positions the hero at scroll 0).
+  useEffect(() => {
+    if (!bgRef.current) return;
+
+    const movement = bgRef.current.offsetHeight * 0.55;
+
+    const tween = gsap.fromTo(
+      bgRef.current,
+      { y: 0 },
+      {
+        y: movement,
+        ease: "none",
+        scrollTrigger: {
+          trigger: heroRef.current,
+          start: "top top",
+          end: "bottom top",
+          scrub: true,
+        },
+      }
+    );
+
+    return () => {
+      tween.scrollTrigger?.kill();
+      tween.kill();
+      gsap.set(bgRef.current, { y: 0 });
+    };
+  }, [isDesktop]);
+
   return (
     <section ref={heroRef} className="relative h-screen w-full flex items-center justify-center overflow-hidden">
       <div
@@ -87,10 +117,13 @@ export const Hero = () => {
             </div>
           )}
         </div>
+
+        {/* High-contrast black & white overlay over the hero video */}
+        <div className="pointer-events-none absolute inset-0 backdrop-grayscale backdrop-contrast-150" />
       </div>
 
       <div className="relative z-10 w-full h-full flex flex-col justify-end items-end px-6 sm:px-10 pb-4 sm:pb-6">
-        <div className="flex flex-col items-end w-fit" data-speed="0.1">
+        <div className="flex flex-col items-end w-fit">
           <motion.div
             initial={{ opacity: 0, y: 50 }}
             animate={{ opacity: 1, y: 0 }}
@@ -99,8 +132,8 @@ export const Hero = () => {
             <h1
               className="text-[11vw] sm:text-[12vw] md:text-[13vw] tracking-tighter text-white leading-[0.8] uppercase select-none text-right"
             >
-              <span className="block">Emil</span>
-              <span className="block">Shain</span>
+              <span className="block text-accent">Emil</span>
+              <span className="block text-accent">Shain</span>
             </h1>
           </motion.div>
 
@@ -116,7 +149,7 @@ export const Hero = () => {
               animate={isNonInteractiveHandset ? {} : { y: 0 }}
               exit={isNonInteractiveHandset ? {} : { y: "-100%" }}
               transition={isNonInteractiveHandset ? undefined : { duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-              className="text-white font-sub text-lg sm:text-xl md:text-2xl uppercase block absolute left-0 top-0 h-full flex items-center"
+              className="text-accent font-sub text-lg sm:text-xl md:text-2xl uppercase block absolute left-0 top-0 h-full flex items-center"
             >
               {designations[index]}
             </motion.span>
